@@ -18,6 +18,7 @@ class relationship():
     def __init__(self, charA, charB):
         self.type = None
         self.nature = None
+        self.assignRandomType()
 
     def assignRandomType(self):
         self.type = random.choice(['familial', 'romantic', 'professional', 'social'])
