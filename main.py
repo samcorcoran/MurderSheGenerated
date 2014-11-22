@@ -91,4 +91,6 @@ for n in range(numEliminatedEdges):
 # Print names
 for char in c.edges.keys():
     print(char.name)
+    for rel in c.edges[char]:
+        print("    - " + str(rel[0].name) + "(" + str(rel[1].type) + ")")
 print(c.edges)
