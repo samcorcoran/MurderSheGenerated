@@ -17,4 +17,6 @@ def generateFirstName(gender):
     return name
 
 def generateSurname():
-    return random.choice(surnames)
+    surname = random.choice(surnames)
+    surnames.remove(surname)
+    return surname
