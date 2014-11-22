@@ -1,6 +1,8 @@
 import uuid
 import random
 
+vertexCount = 0
+
 class graph():
     def __init__(self):
         self.edges = dict()
@@ -56,4 +58,11 @@ class graph():
 class vertex():
     def __init__(self):
         self.uuid = uuid.uuid4()
+        self.id = self.getId()
+
+    def getId(self):
+        global vertexCount
+        id = vertexCount
+        vertexCount += 1
+        return id
 
