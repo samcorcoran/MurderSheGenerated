@@ -1,4 +1,5 @@
 import random
+from pprint import pprint
 
 import namegen
 import graph
@@ -90,7 +91,8 @@ for n in range(numEliminatedEdges):
 
 # Print names
 for char in c.edges.keys():
-    print(char.name)
+    print(char.name + " [" + str(char.id) + "]")
     for rel in c.edges[char]:
-        print("    - " + str(rel[0].name) + "(" + str(rel[1].type) + ")")
+        #pprint(vars(rel[0]))
+        print("    - " + str(rel[0].name) + " [" + str(rel[0].id) + "] " + "(" + str(rel[1].type) + ")")
 print(c.edges)
