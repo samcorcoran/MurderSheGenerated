@@ -7,10 +7,14 @@ femaleFirstNames = ['Ansley', 'Bernadine', 'Florence', 'Gertrude', 'Grace', 'Kat
 surnames = ['Annesley', 'Asquith', 'Bankes', 'Buxton', 'Cadogan', 'Calvert', 'Cootes', 'Duncombe', 'Egerton', 'Fortescue', 'Guinness', 'Harley', 'Lambton', 'Mortimer', 'Osborne', 'Paget', 'Phipps', 'Runciman', 'Stopford', 'Talbot', 'Vane-Tempest', 'Walpole']
 
 def generateFirstName(gender):
+    nameChoices = None
     if gender == "m":
-        return random.choice(maleFirstNames)
+        nameChoices = maleFirstNames
     else:
-        return random.choice(femaleFirstNames)
+        nameChoices = femaleFirstNames
+    name = random.choice(nameChoices)
+    nameChoices.remove(name)
+    return name
 
 def generateSurname():
     return random.choice(surnames)
