@@ -28,17 +28,24 @@ class character(graph.vertex):
 # Create graph
 c = cast.cast()
 # Add characters
-totalCharacters = random.randint(4, 15)
+#totalCharacters = random.randint(4, 15)
+totalCharacters = 4
 print("TOTAL CHARACTERS: " + str(totalCharacters))
 for n in range(totalCharacters):
     c.addCharacter(character())
 
+# GENERATE FAMILIAL RELATIONSHIP NETWORK
 numFamilies = (2, 4)
 numFamilyMembers = (2, 5)
 if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
     print("WARNING: May have too few characters for max possible families and members")
 print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyMembers))
-c.generatePlotFamilies(numFamilies, numFamilyMembers)
+#c.generatePlotFamilies(numFamilies, numFamilyMembers)
+c.generateNonPlotFamilies()
+
+# GENERATE ROMANTIC RELATIONSHIP NETWORK
+numRomances = int(0.8 * totalCharacters)
+c.generateRomanticEntanglements(numRomances)
 
 # Print names
 print("- Relationships -")

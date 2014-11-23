@@ -1,4 +1,5 @@
 import random
+from pprint import pprint
 
 import graph
 import relationships as rship
@@ -80,7 +81,6 @@ class cast(graph.graph):
             for charB in family.members:
                 if charA == charB:
                     continue
-
                 # Create relationship
                 self.createRelationship(charA, charB, rship.relType.familial)
 
@@ -121,7 +121,6 @@ class cast(graph.graph):
                 print(member.getFullName())
             # Create familial relationships
             self.createFamilialRelationships(newFamily)
-        self.generateNonPlotFamilies()
 
     def generateNonPlotFamilies(self):
         """ Create single-member non-plot families """
@@ -138,3 +137,33 @@ class cast(graph.graph):
                 candidates.append(charA)
         return candidates
 
+    def generateRomanticEntanglements(self, numRomances):
+        """ Creates romantic relationships between characters """
+        for n in range(numRomances):
+            # Perform number of attempts, to attempt to guarantee numRomances
+            numAttempts = 10
+            for attemptNumber in range(numAttempts):
+                charA = random.choice(list(self.edges.keys()))
+                candidates = self.getRomanceCandidates(charA)
+                if candidates:
+                    # Create relationship
+                    self.createRelationship(charA, random.choice(candidates), rship.relType.romantic)
+                    break
+                else:
+                    continue
+
+    def getRomanceCandidates(self, charA):
+        candidates = list(self.edges.keys())
+        # Avoid self-romance
+        candidates.remove(charA)
+        for charB in candidates:
+            remove = False
+            # Avoid duplicate romances
+            if charA in self.edges:
+                for edge in self.edges[charA]:
+                    if edge[0] == charB and edge[1].type == rship.relType.romantic:
+                        remove = True
+                        break
+            if remove:
+                candidates.remove(charB)
+        return candidates
