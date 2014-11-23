@@ -19,28 +19,28 @@ class character(graph.vertex):
         self.family = None
 
     def setFamily(self, newFamily):
-        if self.family == None:
+        if self.family != None:
             print("ERROR: Character already has family.")
         self.family = newFamily
+        self.family.addMember(self)
 
     def getFullName(self):
-        return self.name + " " + self.family.surname
+        return str(self.name) + " " + str(self.family.surname)
 
 # Create graph
 c = cast.cast()
 # Add characters
-totalCharacters = 5
+totalCharacters = random.randint(4, 15)
+print("TOTAL CHARACTERS: " + str(totalCharacters))
 for n in range(totalCharacters):
     c.addCharacter(character())
-# Totally connect graph
-c.totallyConnect()
-# Eliminate some random edges
-numEliminatedEdges = 5
-for n in range(numEliminatedEdges):
-    c.removeRandomRelationship()
 
-# Create relationship groups
-c.generateRelationshipEntities()
+numFamilies = (2, 4)
+numFamilyMembers = (2, 5)
+if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
+    print("WARNING: May have too few characters for max possible families and members")
+print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyMembers))
+c.generatePlotFamilies(numFamilies, numFamilyMembers)
 
 # Print names
 print("- Relationships -")

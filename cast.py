@@ -14,8 +14,13 @@ class cast(graph.graph):
     def addCharacter(self, c):
         self.addVertex(c)
 
-    def createRelationship(self, charA, charB):
-        rel = rship.relationship(charA, charB)
+    def createRelationship(self, charA, charB, relType = None):
+        # Don't add relationship if already related
+        for edge in self.edges[charA]:
+            if edge[0] == charB:
+                return
+        # Create relationship object
+        rel = rship.relationship(charA, charB, relType)
         self.allRelationships.append(rel)
         self.addRelationship(charA, charB, rel)
 
@@ -67,25 +72,69 @@ class cast(graph.graph):
                 self.gatherConnectedRelTypeMembers(rel[0], desiredType, members)
         return members
 
-    def generateRelationshipEntities(self):
-        for charA in self.edges.keys():
-            for edge in self.edges[charA]:
-                rel = edge[1]
-                if rel.type == relType.familial:
-                    # Check for no existing family
-                    if rel.members[0].family == None:
-                        newFamily = rship.family()
-                        self.plotFamilies.append(newFamily)
-                        self.connectFamily(rel.members[0], newFamily)
-            # Create single-member non-plot families
-            if charA.family == None:
-                charA.family = rship.family()
+    def createFamilialRelationships(self, family):
+        if family == None:
+            print("ERROR: No family supplied to createFamilialRelationships")
+            return
+        for charA in family.members:
+            for charB in family.members:
+                if charA == charB:
+                    continue
 
-    def connectFamily(self, charA, family):
-        global c #cast
-        familyMembers = list()
-        self.gatherConnectedRelTypeMembers(charA, relType.familial, familyMembers)
-        print("New family:")
-        for m in familyMembers:
-            m.family = family
-            print(m.name + " " + family.surname)
+                # Create relationship
+                self.createRelationship(charA, charB, rship.relType.familial)
+
+    def generatePlotFamilies(self, rangeFamilies, rangeFamilyMembers):
+        """
+        Creates parameterised number of families with parameterised numbers of members by creating family
+        entities and selecting members.
+        :param rangeFamilies: tuple of min, max number of familes desired
+        :param rangeFamilyMembers: tuple of min, max number of members of each family
+        :return: None
+        """
+        candidates = self.getFamilyCandidates()
+        numFamilies = random.randint(*rangeFamilies)
+        # If player count can't support 2-member families at min family count, reduce numFamilies so it can
+        if len(candidates) < numFamilies*2:
+            print("WARNING: Player count cannot sustain num families. Reducing num family min/max.")
+            numFamilies = random.randint(0, int(len(candidates)/2))
+        print("- Families (" + str(numFamilies) + ") -")
+        if len(candidates) < rangeFamilyMembers[0]*numFamilies:
+            print("ERROR: Less family candidates than min member count allows")
+        # Create desired number of multi-member plot families
+        for n in range(numFamilies):
+            remainingFamilies = numFamilies - n
+            if len(candidates) < remainingFamilies * 2:
+                print("ERROR: Less family candidates than desired families")
+                break
+            newFamily = rship.family()
+            # Cap possible family members so to-be created families have minimum of two members each
+            numSpareCandidates = len(candidates) - (remainingFamilies * 2)
+            # Used desired min/max, unless there aren't enough
+            minAdditionalMembers = min(rangeFamilyMembers[0]-2, numSpareCandidates)
+            maxAdditionalMembers = min(rangeFamilyMembers[1]-2, numSpareCandidates)
+            numMembers = 2 + random.randint(minAdditionalMembers, maxAdditionalMembers)
+            print("New Family: " + newFamily.surname + "(" + str(numMembers) + ")")
+            for m in range(numMembers):
+                member = candidates.pop()
+                member.setFamily(newFamily)
+                print(member.getFullName())
+            # Create familial relationships
+            self.createFamilialRelationships(newFamily)
+        self.generateNonPlotFamilies()
+
+    def generateNonPlotFamilies(self):
+        """ Create single-member non-plot families """
+        candidates = self.getFamilyCandidates()
+        for charA in candidates:
+            newFamily = rship.family()
+            charA.family = newFamily
+
+    def getFamilyCandidates(self):
+        """ Returns list of all characters eligible to be added to a family """
+        candidates = list()
+        for charA in self.edges.keys():
+            if charA.family == None:
+                candidates.append(charA)
+        return candidates
+
