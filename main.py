@@ -12,8 +12,6 @@ class character(graph.vertex):
         graph.vertex.__init__(self)
         self.gender = random.choice(['m','f'])
         self.name = namegen.generateFirstName(self.gender)
-        # Surname is a property of family
-        #self.surname = None
         self.victim = False
         # Entity associations
         self.family = None
