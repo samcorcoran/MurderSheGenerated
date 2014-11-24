@@ -64,7 +64,7 @@ c.generateRomanticEntanglements(numRomances)
 
 # Print names
 print("- Relationships -")
-for char in c.edges.keys():
+for char in c.characters:
     print(char.getFullName() + " [" + str(char.id) + "]")
     for relation in char.typesByRelation.keys():
         print("    - " + relation.getFullName() + " [" + str(relation.id) + "] " + "(" + str([x.type.name for x in char.typesByRelation[relation]]) + ")")

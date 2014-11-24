@@ -15,17 +15,10 @@ class relType(Enum):
 
 class relationship():
     """ Manner in which two characters are connected. An edge between vertices. """
-    def __init__(self, charA, charB, relType = None):
+    def __init__(self, charA, charB, relType):
         self.members = (charA, charB)
-        self.type = None
+        self.type = relType
         self.nature = None
-        if relType:
-            self.type = relType
-        else:
-            self.assignRandomType()
-
-    def assignRandomType(self):
-        self.type = relType.getRandomRelType()
 
 
 totalFamilies = 0

@@ -5,10 +5,10 @@ import graph
 import relationships as rship
 from relationships import relType as rType
 
-class cast(graph.graph):
+class cast():
     """ Network of relationships between characters """
     def __init__(self):
-        graph.graph.__init__(self)
+        self.characters = list()
         # Lists of relationship objects, keyed by type
         self.relationships = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
         # Lists of relationship objects, keyed by participants
@@ -18,15 +18,15 @@ class cast(graph.graph):
         return [item for sublist in self.relationships for item in sublist]
 
     def addCharacter(self, c):
-        self.addVertex(c)
+        self.characters.append(c)
 
-    def createRelationship(self, charA, charB, relType = None):
-        # Don't add relationship if already related
-        for edge in self.edges[charA]:
-            if edge[0] == charB:
-                return
-        # Create relationship object
+    def createRelationship(self, charA, charB, relType):
+        # Create relationship object (does not affect state - not binding relationship until stored somewhere)
         rel = rship.relationship(charA, charB, relType)
+        # Don't add relationship if already related
+        if charB in charA.relationsByType[rel.type]:
+            print("WARNING: Attempted to create duplicate relationship (" + relType.name + ")")
+            return
         # Store relationship object keyed by relationship type
         self.relationships[rel.type].append(rel)
         # Also store rel obj keyed by participant tuples (in both orderings)
@@ -44,8 +44,6 @@ class cast(graph.graph):
         self.relationshipsByParticipants[(charB, charA)].append(rel)
 
     def addRelationship(self, charA, charB, rel):
-        self.edges[charA].append((charB, rel))
-        self.edges[charB].append((charA, rel))
         charA.addRelationship(charB, rel)
         charB.addRelationship(charA, rel)
 
@@ -71,20 +69,7 @@ class cast(graph.graph):
                 charB = random.choice(self.edges[charA])[0]
         self.removeReciprocalRelationship(charA, charB)
 
-    def totallyConnect(self):
-        """ Create a relationship between every pair of vertices """
-        for charA in self.edges:
-            for charB in self.edges:
-                if charA != charB:
-                    # Confirm relationship doesn't already exist
-                    exists = False
-                    for rel in self.edges[charA]:
-                        if rel[0] == charB:
-                            exists = True
-                            break
-                    if not exists:
-                        self.createRelationship(charA, charB)
-
+    # TODO: Needed later?
     def gatherConnectedRelTypeMembers(self, charA, desiredType, members):
         members.append(charA)
         for rel in self.edges[charA]:
@@ -152,7 +137,7 @@ class cast(graph.graph):
     def getFamilyCandidates(self):
         """ Returns list of all characters eligible to be added to a family """
         candidates = list()
-        for charA in self.edges.keys():
+        for charA in self.characters:
             if charA.family == None:
                 candidates.append(charA)
         return candidates
@@ -163,27 +148,22 @@ class cast(graph.graph):
             # Perform number of attempts, to attempt to guarantee numRomances
             numAttempts = 10
             for attemptNumber in range(numAttempts):
-                charA = random.choice(list(self.edges.keys()))
+                charA = random.choice(self.characters)
                 candidates = self.getRomanceCandidates(charA)
                 if candidates:
-                    # Create relationship
                     self.createRelationship(charA, random.choice(candidates), rship.relType.romantic)
                     break
                 else:
+                    # Pick another charA if this one has no romance candidates
                     continue
 
     def getRomanceCandidates(self, charA):
-        candidates = list(self.edges.keys())
+        candidates = list(self.characters)
         # Avoid self-romance
         candidates.remove(charA)
         for charB in candidates:
-            remove = False
             # Avoid duplicate romances
-            if charA in self.edges:
-                for edge in self.edges[charA]:
-                    if edge[0] == charB and edge[1].type == rship.relType.romantic:
-                        remove = True
-                        break
-            if remove:
+            if charB in charA.relationsByType[rType.romantic]:
                 candidates.remove(charB)
+                continue
         return candidates
