@@ -3,14 +3,19 @@ from pprint import pprint
 
 import graph
 import relationships as rship
-from relationships import relType
+from relationships import relType as rType
 
 class cast(graph.graph):
     """ Network of relationships between characters """
     def __init__(self):
         graph.graph.__init__(self)
-        self.allRelationships = list()
-        self.plotFamilies = list()
+        # Lists of relationship objects, keyed by type
+        self.relationships = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
+        # Lists of relationship objects, keyed by participants
+        self.relationshipsByParticipants = dict()
+
+    def getAllRelationships(self):
+        return [item for sublist in self.relationships for item in sublist]
 
     def addCharacter(self, c):
         self.addVertex(c)
@@ -22,12 +27,27 @@ class cast(graph.graph):
                 return
         # Create relationship object
         rel = rship.relationship(charA, charB, relType)
-        self.allRelationships.append(rel)
+        # Store relationship object keyed by relationship type
+        self.relationships[rel.type].append(rel)
+        # Also store rel obj keyed by participant tuples (in both orderings)
+        self.storeRelationshipByParticipants(charA, charB, rel)
+        # Store in edges
         self.addRelationship(charA, charB, rel)
+
+    def storeRelationshipByParticipants(self, charA, charB, rel):
+        """ Store relationship object keyed on participants (in both orderings) """
+        if not (charA, charB) in self.relationshipsByParticipants:
+            self.relationshipsByParticipants[(charA, charB)] = list()
+        self.relationshipsByParticipants[(charA, charB)].append(rel)
+        if not (charB, charA) in self.relationshipsByParticipants:
+            self.relationshipsByParticipants[(charB, charA)] = list()
+        self.relationshipsByParticipants[(charB, charA)].append(rel)
 
     def addRelationship(self, charA, charB, rel):
         self.edges[charA].append((charB, rel))
         self.edges[charB].append((charA, rel))
+        charA.addRelationship(charB, rel)
+        charB.addRelationship(charA, rel)
 
     def removeDirectedRelationship(self, charA, charB):
         """ Removes v2 from v1 edge list """
