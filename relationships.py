@@ -19,6 +19,7 @@ class relationship():
         self.members = (charA, charB)
         self.type = relType
         self.nature = None
+        self.publicKnowledge = True
 
 
 totalFamilies = 0

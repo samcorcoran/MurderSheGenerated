@@ -7,7 +7,7 @@ import graph
 import cast
 import relationships as rship
 from relationships import relType as rType
-
+from cast import ConnectionStrategy
 class character(graph.vertex):
     """ Actor/agent within the story """
     def __init__(self):
@@ -30,7 +30,10 @@ class character(graph.vertex):
         self.family.addMember(self)
 
     def getFullName(self):
-        return str(self.name) + " " + str(self.family.surname)
+        fullName = str(self.name)
+        if self.family:
+            fullName += " " + str(self.family.surname)
+        return fullName
 
     def addRelationship(self, charB, rel):
         self.relationsByType[rel.type].append(charB)
@@ -43,24 +46,30 @@ class character(graph.vertex):
 c = cast.cast()
 # Add characters
 #totalCharacters = random.randint(4, 15)
-totalCharacters = 6
+totalCharacters = 4
 print("TOTAL CHARACTERS: " + str(totalCharacters))
 for n in range(totalCharacters):
     c.addCharacter(character())
 
 # GENERATE FAMILIAL RELATIONSHIP NETWORK
-numFamilies = (2, 4)
-numFamilyMembers = (2, 5)
+numFamilies = (2,3)#(2, 4)
+numFamilyMembers = (3,3)#(2, 5)
 if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
     print("WARNING: May have too few characters for max possible families and members")
 print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyMembers))
-c.generatePlotFamilies(numFamilies, numFamilyMembers)
-c.generateNonPlotFamilies()
+#c.generatePlotFamilies(numFamilies, numFamilyMembers)
 
 # GENERATE ROMANTIC RELATIONSHIP NETWORK
-numRomances = int(0.8 * totalCharacters)
-numRomances = 20
+numRomances = int(0.5 * totalCharacters)
 c.generateRomanticEntanglements(numRomances)
+
+c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
+#c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
+
+c.createRelationshipEntities()
+
+# Fill in remaining details
+c.generateNonPlotFamilies()
 
 # Print names
 print("- Relationships -")

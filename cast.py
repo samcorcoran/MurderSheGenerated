@@ -1,9 +1,15 @@
 import random
 from pprint import pprint
+from enum import Enum
 
 import graph
 import relationships as rship
 from relationships import relType as rType
+
+class ConnectionStrategy(Enum):
+    totallyConnect = "total"
+    randomlyConnect = "random"
+    stringConnect = "string"
 
 class cast():
     """ Network of relationships between characters """
@@ -26,21 +32,24 @@ class cast():
         # Don't add relationship if already related
         if charB in charA.relationsByType[rel.type]:
             print("WARNING: Attempted to create duplicate relationship (" + relType.name + ")")
-            return
+            return False
         # Store relationship object keyed by relationship type
         self.relationships[rel.type].append(rel)
         # Also store rel obj keyed by participant tuples (in both orderings)
         self.storeRelationshipByParticipants(charA, charB, rel)
         # Store in edges
         self.addRelationship(charA, charB, rel)
+        return True
 
     def storeRelationshipByParticipants(self, charA, charB, rel):
         """ Store relationship object keyed on participants (in both orderings) """
+        # Ensure character pairing exists as dictionary key
         if not (charA, charB) in self.relationshipsByParticipants:
             self.relationshipsByParticipants[(charA, charB)] = list()
-        self.relationshipsByParticipants[(charA, charB)].append(rel)
         if not (charB, charA) in self.relationshipsByParticipants:
             self.relationshipsByParticipants[(charB, charA)] = list()
+        # Store relationship object under both keys
+        self.relationshipsByParticipants[(charA, charB)].append(rel)
         self.relationshipsByParticipants[(charB, charA)].append(rel)
 
     def addRelationship(self, charA, charB, rel):
@@ -69,15 +78,6 @@ class cast():
                 charB = random.choice(self.edges[charA])[0]
         self.removeReciprocalRelationship(charA, charB)
 
-    # TODO: Needed later?
-    def gatherConnectedRelTypeMembers(self, charA, desiredType, members):
-        members.append(charA)
-        for rel in self.edges[charA]:
-            if rel[1].type == desiredType and not rel[0] in members:
-                # Extend search to matching character's relationships
-                self.gatherConnectedRelTypeMembers(rel[0], desiredType, members)
-        return members
-
     def createFamilialRelationships(self, family):
         if family == None:
             print("ERROR: No family supplied to createFamilialRelationships")
@@ -89,6 +89,7 @@ class cast():
                 # Create relationship
                 self.createRelationship(charA, charB, rship.relType.familial)
 
+    # Vestigial?
     def generatePlotFamilies(self, rangeFamilies, rangeFamilyMembers):
         """
         Creates parameterised number of families with parameterised numbers of members by creating family
@@ -134,6 +135,7 @@ class cast():
             newFamily = rship.family()
             charA.family = newFamily
 
+    # Vestigial, and needs replacing in usage?
     def getFamilyCandidates(self):
         """ Returns list of all characters eligible to be added to a family """
         candidates = list()
@@ -167,3 +169,96 @@ class cast():
                 candidates.remove(charB)
                 continue
         return candidates
+
+    def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax, groupSizeMinMax, connectionStrategy):
+        """ Gathers candidates and forms groups connected by typed relationships based on parameters """
+        numGroups = random.randint(*numGroupsMinMax)
+        print("Num [" + relationshipType.name + "] groups: " + str(numGroups))
+        for groupNum in range(numGroups):
+            candidates = self.gatherCandidates(relationshipType, numAllowed)
+            if not candidates:
+                return
+            # Create a new group
+            groupMembers = list()
+            groupSize = random.randint(*groupSizeMinMax)
+            print("  max group size: " + str(groupSize))
+            for memberNum in range(groupSize):
+                # Select new member
+                if not candidates:
+                    break
+                member = candidates.pop()
+                print("added member " + str(member.getFullName()))
+                groupMembers.append(member)
+            # Connect members of group
+            self.connectCandidates(groupMembers, connectionStrategy, relationshipType)
+            if not candidates:
+                break
+        pass
+
+    def connectCandidates(self, groupMembers, strategy, relationshipType):
+        """ Relationships (of relType) are created between group members based on given strategy """
+        if strategy == ConnectionStrategy.totallyConnect:
+            # Every member is related to every other
+            print("NUM GROUP MEMBERS " + str(len(groupMembers)))
+            count = 0
+            for charA in groupMembers:
+                for charB in groupMembers:
+                    if charA == charB:
+                        continue
+                    if self.createRelationship(charA, charB, relationshipType):
+                        count += 1
+            print("relationships created: " + str(count))
+        elif strategy == ConnectionStrategy.stringConnect:
+            # Members form a line (e.g. o-o-o-o-o)
+            for n in range(len(groupMembers)-1):
+                self.createRelationship(groupMembers[n], groupMembers[n+1], relationshipType)
+        elif strategy == ConnectionStrategy.randomlyConnect:
+            # All members are randomly connected to existing member of the in-group
+            alreadyConnected = list()
+            for charA in groupMembers:
+                if not alreadyConnected:
+                    alreadyConnected.append(charA)
+                else:
+                    # Connect to existing member of 'in-group'
+                    self.createRelationship(charA, random.choice(alreadyConnected), relationshipType)
+                # Track character as member of in-group
+                groupMembers.remove(charA)
+                alreadyConnected.append(charA)
+        else:
+            print("ERROR: Connection strategy unknown")
+
+    def gatherCandidates(self, relationshipType, numAllowed):
+        """ Given criteria, possible relations are listed and returned """
+        candidates = list(self.characters)
+        for charA in candidates:
+            # Disqualify on number of existing relationships of type
+            if numAllowed != -1 and len(charA.relationsByType[relationshipType]) >= numAllowed:
+                candidates.remove(charA)
+        random.shuffle(candidates)
+        return candidates
+
+    def createRelationshipEntities(self):
+        # Familial
+        for charA in self.characters:
+            if charA.family:
+                continue
+            if charA.relationsByType[rType.familial]:
+                # Has familial relations, needs family
+                newFamily = rship.family()
+                familyMembers = list()
+                self.gatherConnectedRelTypeMembers(charA, rType.familial, familyMembers)
+                for member in familyMembers:
+                    member.setFamily(newFamily)
+                # Check if totally connected (because family should be)
+                for member in familyMembers:
+                    if len(member.relationsByType[rType.familial]) < len(familyMembers)-1:
+                        print("ERROR: Family not totally connected")
+                        break
+
+    def gatherConnectedRelTypeMembers(self, charA, desiredType, members):
+        members.append(charA)
+        for charB in charA.relationsByType[desiredType]:
+            if not charB in members:
+                # Extend search to matching character's relationships
+                self.gatherConnectedRelTypeMembers(charB, desiredType, members)
+        return members
