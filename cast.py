@@ -92,97 +92,11 @@ class cast():
                 charB = random.choice(self.edges[charA])[0]
         self.removeReciprocalRelationship(charA, charB)
 
-    def createFamilialRelationships(self, family):
-        if family == None:
-            print("ERROR: No family supplied to createFamilialRelationships")
-            return
-        for charA in family.members:
-            for charB in family.members:
-                if charA == charB:
-                    continue
-                # Create relationship
-                self.createRelationship(charA, charB, rship.relType.familial)
-
-    # Vestigial?
-    def generatePlotFamilies(self, rangeFamilies, rangeFamilyMembers):
-        """
-        Creates parameterised number of families with parameterised numbers of members by creating family
-        entities and selecting members.
-        :param rangeFamilies: tuple of min, max number of familes desired
-        :param rangeFamilyMembers: tuple of min, max number of members of each family
-        :return: None
-        """
-        candidates = self.getFamilyCandidates()
-        numFamilies = random.randint(*rangeFamilies)
-        # If player count can't support 2-member families at min family count, reduce numFamilies so it can
-        if len(candidates) < numFamilies*2:
-            print("WARNING: Player count cannot sustain num families. Reducing num family min/max.")
-            numFamilies = random.randint(0, int(len(candidates)/2))
-        print("- Families (" + str(numFamilies) + ") -")
-        if len(candidates) < rangeFamilyMembers[0]*numFamilies:
-            print("ERROR: Less family candidates than min member count allows")
-        # Create desired number of multi-member plot families
-        for n in range(numFamilies):
-            remainingFamilies = numFamilies - n
-            if len(candidates) < remainingFamilies * 2:
-                print("ERROR: Less family candidates than desired families")
-                break
-            newFamily = rship.family()
-            # Cap possible family members so to-be created families have minimum of two members each
-            numSpareCandidates = len(candidates) - (remainingFamilies * 2)
-            # Used desired min/max, unless there aren't enough
-            minAdditionalMembers = min(rangeFamilyMembers[0]-2, numSpareCandidates)
-            maxAdditionalMembers = min(rangeFamilyMembers[1]-2, numSpareCandidates)
-            numMembers = 2 + random.randint(minAdditionalMembers, maxAdditionalMembers)
-            print("New Family: " + newFamily.surname + "(" + str(numMembers) + ")")
-            for m in range(numMembers):
-                member = candidates.pop()
-                member.setFamily(newFamily)
-                print(member.getFullName())
-            # Create familial relationships
-            self.createFamilialRelationships(newFamily)
-
     def generateNonPlotFamilies(self):
         """ Create single-member non-plot families """
-        candidates = self.getFamilyCandidates()
+        candidates = self.gatherCandidates(rType.familial, 1)
         for charA in candidates:
-            newFamily = rship.family()
-            charA.family = newFamily
-
-    # Vestigial, and needs replacing in usage?
-    def getFamilyCandidates(self):
-        """ Returns list of all characters eligible to be added to a family """
-        candidates = list()
-        for charA in self.characters:
-            if charA.family == None:
-                candidates.append(charA)
-        return candidates
-
-    def generateRomanticEntanglements(self, numRomances):
-        """ Creates romantic relationships between characters """
-        for n in range(numRomances):
-            # Perform number of attempts, to attempt to guarantee numRomances
-            numAttempts = 10
-            for attemptNumber in range(numAttempts):
-                charA = random.choice(self.characters)
-                candidates = self.getRomanceCandidates(charA)
-                if candidates:
-                    self.createRelationship(charA, random.choice(candidates), rship.relType.romantic)
-                    break
-                else:
-                    # Pick another charA if this one has no romance candidates
-                    continue
-
-    def getRomanceCandidates(self, charA):
-        candidates = list(self.characters)
-        # Avoid self-romance
-        candidates.remove(charA)
-        for charB in candidates:
-            # Avoid duplicate romances
-            if charB in charA.relationsByType[rType.romantic]:
-                candidates.remove(charB)
-                continue
-        return candidates
+            charA.family = rship.family()
 
     def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax, groupSizeMinMax, connectionStrategy):
         """ Gathers candidates and forms groups connected by typed relationships based on parameters """

@@ -20,11 +20,9 @@ numFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
 if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
     print("WARNING: May have too few characters for max possible families and members")
 print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyMembers))
-#c.generatePlotFamilies(numFamilies, numFamilyMembers)
 
 # GENERATE ROMANTIC RELATIONSHIP NETWORK
 numRomances = int(0.5 * totalCharacters)
-#c.generateRomanticEntanglements(numRomances)
 
 c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
 #c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
