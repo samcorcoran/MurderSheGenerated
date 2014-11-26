@@ -36,11 +36,16 @@ class character(graph.vertex):
         return fullName
 
     def addRelationship(self, charB, rel):
+        if charB in self.relationsByType[rel.type]:
+            print("ERROR: CharA already has this relationship with charB")
+            return False
         self.relationsByType[rel.type].append(charB)
         self.relationships[rel.type].append(rel)
-        if not charB in self.typesByRelation:
+        # Confirm if charB is already a key
+        if not charB in self.typesByRelation.keys():
             self.typesByRelation[charB] = list()
         self.typesByRelation[charB].append(rel)
+        return True
 
 # Create graph
 c = cast.cast()
@@ -61,7 +66,7 @@ print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyM
 
 # GENERATE ROMANTIC RELATIONSHIP NETWORK
 numRomances = int(0.5 * totalCharacters)
-c.generateRomanticEntanglements(numRomances)
+#c.generateRomanticEntanglements(numRomances)
 
 c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
 #c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)

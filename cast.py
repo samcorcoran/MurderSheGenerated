@@ -27,6 +27,10 @@ class cast():
         self.characters.append(c)
 
     def createRelationship(self, charA, charB, relType):
+        totalRelationships = self.getTotalRelationships()
+        charATotalTypedRelationships = len(charA.relationships[relType])
+        charBTotalTypedRelationships = len(charB.relationships[relType])
+        totalRelationshipsByParticipantsKeys = len(self.relationshipsByParticipants.keys())
         # Create relationship object (does not affect state - not binding relationship until stored somewhere)
         rel = rship.relationship(charA, charB, relType)
         # Don't add relationship if already related
@@ -37,9 +41,22 @@ class cast():
         self.relationships[rel.type].append(rel)
         # Also store rel obj keyed by participant tuples (in both orderings)
         self.storeRelationshipByParticipants(charA, charB, rel)
-        # Store in edges
-        self.addRelationship(charA, charB, rel)
+        # Store in characters
+        charA.addRelationship(charB, rel)
+        charB.addRelationship(charA, rel)
+        # Test relationship creation did not have problems
+        if (totalRelationships+1 != self.getTotalRelationships()):
+            print("ERROR: Relationship not correctly added to total set")
+        if (charATotalTypedRelationships+1 != len(charA.relationships[relType])):
+            print("ERROR: Relationship not correctly added to charA")
+        if (charBTotalTypedRelationships+1 != len(charB.relationships[relType])):
+            print("ERROR: Relationship not correctly added to charB")
+        if (totalRelationshipsByParticipantsKeys+2 != len(self.relationshipsByParticipants.keys())):
+            print("ERROR: Relationship not correctly added, keyed by participants")
         return True
+
+    def getTotalRelationships(self):
+        return len([item for sublist in self.relationships.values() for item in sublist])
 
     def storeRelationshipByParticipants(self, charA, charB, rel):
         """ Store relationship object keyed on participants (in both orderings) """
@@ -51,10 +68,6 @@ class cast():
         # Store relationship object under both keys
         self.relationshipsByParticipants[(charA, charB)].append(rel)
         self.relationshipsByParticipants[(charB, charA)].append(rel)
-
-    def addRelationship(self, charA, charB, rel):
-        charA.addRelationship(charB, rel)
-        charB.addRelationship(charA, rel)
 
     def removeDirectedRelationship(self, charA, charB):
         """ Removes v2 from v1 edge list """
