@@ -195,13 +195,11 @@ class cast():
             # Create a new group
             groupMembers = list()
             groupSize = random.randint(*groupSizeMinMax)
-            print("  max group size: " + str(groupSize))
             for memberNum in range(groupSize):
                 # Select new member
                 if not candidates:
                     break
                 member = candidates.pop()
-                print("added member " + str(member.getFullName()))
                 groupMembers.append(member)
             # Connect members of group
             self.connectCandidates(groupMembers, connectionStrategy, relationshipType)
@@ -213,12 +211,8 @@ class cast():
         """ Relationships (of relType) are created between group members based on given strategy """
         if strategy == ConnectionStrategy.totallyConnect:
             # Every member is related to every other
-            print("NUM GROUP MEMBERS " + str(len(groupMembers)))
-            count = 0
             for pairing in itertools.combinations(groupMembers, 2):
-                if self.createRelationship(pairing[0], pairing[1], relationshipType):
-                    count+=1
-            print("relationships created: " + str(count))
+                self.createRelationship(pairing[0], pairing[1], relationshipType)
         elif strategy == ConnectionStrategy.stringConnect:
             # Members form a line (e.g. o-o-o-o-o)
             for n in range(len(groupMembers)-1):
@@ -241,10 +235,9 @@ class cast():
     def gatherCandidates(self, relationshipType, numAllowed):
         """ Given criteria, possible relations are listed and returned """
         candidates = list(self.characters)
-        for charA in candidates:
-            # Disqualify on number of existing relationships of type
-            if numAllowed != -1 and len(charA.relationsByType[relationshipType]) >= numAllowed:
-                candidates.remove(charA)
+        # Disqualify by number of existing typed relationships, if necessary
+        if numAllowed != -1:
+            candidates = [x for x in candidates if len(x.relationsByType[relationshipType]) < numAllowed ]
         random.shuffle(candidates)
         return candidates
 
