@@ -1,6 +1,7 @@
 import random
 from pprint import pprint
 from enum import Enum
+import itertools
 
 import graph
 import relationships as rship
@@ -214,12 +215,9 @@ class cast():
             # Every member is related to every other
             print("NUM GROUP MEMBERS " + str(len(groupMembers)))
             count = 0
-            for charA in groupMembers:
-                for charB in groupMembers:
-                    if charA == charB:
-                        continue
-                    if self.createRelationship(charA, charB, relationshipType):
-                        count += 1
+            for pairing in itertools.combinations(groupMembers, 2):
+                if self.createRelationship(pairing[0], pairing[1], relationshipType):
+                    count+=1
             print("relationships created: " + str(count))
         elif strategy == ConnectionStrategy.stringConnect:
             # Members form a line (e.g. o-o-o-o-o)
