@@ -135,14 +135,14 @@ class cast():
         elif strategy == ConnectionStrategy.randomlyConnect:
             # All members are randomly connected to existing member of the in-group
             alreadyConnected = list()
-            for charA in groupMembers:
+            while len(groupMembers) > 0:
+                charA = groupMembers.pop()
                 if not alreadyConnected:
                     alreadyConnected.append(charA)
                 else:
                     # Connect to existing member of 'in-group'
                     self.createRelationship(charA, random.choice(alreadyConnected), relationshipType)
                 # Track character as member of in-group
-                groupMembers.remove(charA)
                 alreadyConnected.append(charA)
         else:
             print("ERROR: Connection strategy unknown")
