@@ -202,6 +202,7 @@ class cast():
                 member = candidates.pop()
                 groupMembers.append(member)
             # Connect members of group
+            print("Group size: " + str(len(groupMembers)))
             self.connectCandidates(groupMembers, connectionStrategy, relationshipType)
             if not candidates:
                 break
