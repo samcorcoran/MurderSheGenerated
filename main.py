@@ -1,3 +1,4 @@
+import random
 
 import cast
 from relationships import relType as rType
@@ -7,15 +8,15 @@ from characters import character
 # Create graph
 c = cast.cast()
 # Add characters
-#totalCharacters = random.randint(4, 15)
-totalCharacters = 4
+totalCharacters = random.randint(4, 15)
+#totalCharacters = 4
 print("TOTAL CHARACTERS: " + str(totalCharacters))
 for n in range(totalCharacters):
     c.addCharacter(character())
 
 # GENERATE FAMILIAL RELATIONSHIP NETWORK
-numFamilies = (2,3)#(2, 4)
-numFamilyMembers = (3,3)#(2, 5)
+numFamilies = (int(totalCharacters/6), int(totalCharacters/3))
+numFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
 if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
     print("WARNING: May have too few characters for max possible families and members")
 print("Family parameters: number" + str(numFamilies) + ", size" + str(numFamilyMembers))
