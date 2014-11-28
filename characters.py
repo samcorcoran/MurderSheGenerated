@@ -13,6 +13,7 @@ class character(graph.vertex):
         self.victim = False
         # Entity associations
         self.family = None
+        self.company = None
         # Characters with relationships with this character
         self.relationsByType = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
         self.typesByRelation = dict()
