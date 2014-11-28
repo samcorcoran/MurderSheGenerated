@@ -156,12 +156,9 @@ class cast():
         random.shuffle(candidates)
         return candidates
 
-    def createRelationshipEntities(self):
-        # Familial
+    def createFamilyEntities(self):
         for charA in self.characters:
-            if charA.family:
-                continue
-            if charA.relationsByType[rType.familial]:
+            if charA.family and charA.relationsByType[rType.familial]:
                 # Has familial relations, needs family
                 newFamily = rship.family()
                 familyMembers = list()
@@ -173,6 +170,18 @@ class cast():
                     if len(member.relationsByType[rType.familial]) < len(familyMembers)-1:
                         print("ERROR: Family not totally connected")
                         break
+
+    def createCompanyEntities(self, maxCompanyMembers):
+        for charA in self.characters:
+            if charA.family and charA.relationsByType[rType.professional]:
+                # Has professional relations, needs company
+                newCompany = rship.company()
+                companyMembers = list()
+                # Gathered results are a breadth first search???
+                self.gatherConnectedRelTypeMembers(charA, rType.professional, companyMembers)
+                maxCompanyMembers = min(companyMembers, maxCompanyMembers)
+                for n in range(maxCompanyMembers):
+                    companyMembers[n].setCompany(newCompany)
 
     def gatherConnectedRelTypeMembers(self, charA, desiredType, members):
         members.append(charA)

@@ -45,7 +45,9 @@ c.generateRelationshipGroupings(rType.social, 3, numSocialGroups, numSocialites,
 # Generate non-plot families (wip)
 #c.generateRelationshipGroupings(rType.familial, 1, (totalCharacters,totalCharacters), (1,1), ConnectionStrategy.totallyConnect)
 
-c.createRelationshipEntities()
+c.createFamilyEntities()
+maxCompanies = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
+c.createCompanyEntities(random.randint(min(*maxCompanies), maxCompanies[1]))
 
 # Fill in remaining details
 c.generateNonPlotFamilies()
