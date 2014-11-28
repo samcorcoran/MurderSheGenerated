@@ -33,3 +33,14 @@ class family():
 
     def addMember(self, newMember):
         self.members.append(newMember)
+
+totalCompanies = 0
+class company():
+    def __init__(self):
+        global totalCompanies
+        self.id = totalCompanies
+        totalCompanies += 1
+        self.companyName = namegen.generateCompanyName()
+
+    def addMember(self, newMember):
+        self.members.append(newMember)
