@@ -20,3 +20,13 @@ def generateSurname():
     surname = random.choice(surnames)
     surnames.remove(surname)
     return surname
+
+companyAdjectives = ["Red", "Blue", "Frosty", "Docile", "Quiet", "Rampant", "Mischievious", "Quixotic"]
+companyNouns = ["Solutions", "Enterprises", "Explorations", "Horses", "Vehicles", "Bridges", "Spaceflight", "Trains", "Manufacturing", "Tar"]
+companyPostfixes = ["Limited", "Incorporated", "International", "Services", "Investigators", "Savants", "PLC"]
+
+def generateCompanyName():
+    adj = random.choice(companyAdjectives)
+    noun = random.choice(companyNouns)
+    postfix = random.choice(companyPostfixes)
+    return adj + noun + postfix
