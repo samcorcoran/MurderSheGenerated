@@ -177,7 +177,8 @@ class cast():
     def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members):
         members.append(charA)
         for charB in charA.relationsByType[desiredType]:
-            if not charB in members:
+            # Character accepted if not already accepted and doesn't already have typed entity
+            if not charB in members and not desiredType in charB.entities:
                 # Recursively extend search to matching character's relationships
                 self.gatherConnectedRelTypeMembersDepthFirst(charB, desiredType, members)
         return members
@@ -187,7 +188,8 @@ class cast():
         leaves = [charA]
         for leaf in leaves:
             for leafRelation in leaf.relationsByType[desiredType]:
-                if leafRelation not in leaves:
+                # Character accepted if not already accepted and doesn't already have typed entity
+                if leafRelation not in leaves and not desiredType in leafRelation.entities:
                     leaves.append(leafRelation)
                     if (0 <= maxMembers <= len(leaves)):
                         # Return early if maximum is reached
