@@ -1,6 +1,7 @@
 
 from enum import Enum
 import random
+from pprint import pprint
 
 import namegen
 
@@ -21,26 +22,42 @@ class relationship():
         self.nature = None
         self.publicKnowledge = True
 
+# Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
+entities = dict()
 
-totalFamilies = 0
-class family():
-    def __init__(self):
-        global totalFamilies
-        self.id = totalFamilies
-        totalFamilies += 1
-        self.surname = namegen.generateSurname()
+def addEntity(entity):
+    if not entity.type in entities:
+        entities[entity.type] = list()
+    entities[entity.type].append(entity)
+
+def totalTypedEntities(relationshipType):
+    if not relationshipType in entities:
+        entities[relationshipType] = list()
+    return len(entities[relationshipType])
+
+class entity():
+    def __init__(self, relationshipType = None):
+        self.type = relationshipType
+        self.id = totalTypedEntities(self.type)
+        addEntity(self)
         self.members = list()
 
     def addMember(self, newMember):
         self.members.append(newMember)
 
-totalCompanies = 0
-class company():
+class family(entity):
     def __init__(self):
-        global totalCompanies
-        self.id = totalCompanies
-        totalCompanies += 1
+        entity.__init__(self, relType.familial)
+        self.surname = namegen.generateSurname()
+
+class company(entity):
+    def __init__(self):
+        entity.__init__(self, relType.professional)
         self.companyName = namegen.generateCompanyName()
 
-    def addMember(self, newMember):
-        self.members.append(newMember)
+class socialGroup(entity):
+    def __init__(self):
+        entity.__init__(self, relType.social)
+        self.socialGroupName = "unnamed";
+
+createEntity = {relType.familial: family, relType.professional: company, relType.social: socialGroup}

@@ -156,37 +156,42 @@ class cast():
         random.shuffle(candidates)
         return candidates
 
-    def createFamilyEntities(self):
+    def createTypedEntities(self, relationshipType, maxMembers, strategy = "bfs"):
+        """ Finds characters missing typed entity and creates one, including typed relations based params """
         for charA in self.characters:
-            if charA.family and charA.relationsByType[rType.familial]:
-                # Has familial relations, needs family
-                newFamily = rship.family()
-                familyMembers = list()
-                self.gatherConnectedRelTypeMembers(charA, rType.familial, familyMembers)
-                for member in familyMembers:
-                    member.setFamily(newFamily)
-                # Check if totally connected (because family should be)
-                for member in familyMembers:
-                    if len(member.relationsByType[rType.familial]) < len(familyMembers)-1:
-                        print("ERROR: Family not totally connected")
-                        break
+            if not relationshipType in charA.entities and charA.relationsByType[relationshipType]:
+                # Has relations but no associated entity
+                newEntity = rship.createEntity[relationshipType]()
+                members = list()
+                if strategy == "bfs":
+                    members = self.gatherConnectedRelTypeMembersBreadthFirst(charA, relationshipType, maxMembers)
+                elif strategy == "dfs":
+                    members = self.gatherConnectedRelTypeMembersDepthFirst(charA, relationshipType, maxMembers)
+                for member in members:
+                    member.joinEntity(newEntity)
 
-    def createCompanyEntities(self, maxCompanyMembers):
+    def createIsolatedTypedEntities(self, relationshipType):
         for charA in self.characters:
-            if charA.family and charA.relationsByType[rType.professional]:
-                # Has professional relations, needs company
-                newCompany = rship.company()
-                companyMembers = list()
-                # Gathered results are a breadth first search???
-                self.gatherConnectedRelTypeMembers(charA, rType.professional, companyMembers)
-                maxCompanyMembers = min(companyMembers, maxCompanyMembers)
-                for n in range(maxCompanyMembers):
-                    companyMembers[n].setCompany(newCompany)
+            charA.entities[relationshipType] = rship.createEntity[relationshipType]()
 
-    def gatherConnectedRelTypeMembers(self, charA, desiredType, members):
+    def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members):
         members.append(charA)
         for charB in charA.relationsByType[desiredType]:
             if not charB in members:
-                # Extend search to matching character's relationships
-                self.gatherConnectedRelTypeMembers(charB, desiredType, members)
+                # Recursively extend search to matching character's relationships
+                self.gatherConnectedRelTypeMembersDepthFirst(charB, desiredType, members)
         return members
+
+    def gatherConnectedRelTypeMembersBreadthFirst(self, charA, desiredType, maxMembers=-1):
+        """ Creates breadth-first expanding set of typed relations to charA and returns  """
+        leaves = [charA]
+        for leaf in leaves:
+            for leafRelation in leaf.relationsByType[desiredType]:
+                if leafRelation not in leaves:
+                    leaves.append(leafRelation)
+                    if (0 <= maxMembers <= len(leaves)):
+                        # Return early if maximum is reached
+                        return leaves
+        # Return full set if no maximum was set
+        return leaves
+

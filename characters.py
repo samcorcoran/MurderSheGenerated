@@ -12,24 +12,23 @@ class character(graph.vertex):
         self.name = namegen.generateFirstName(self.gender)
         self.victim = False
         # Entity associations
-        self.family = None
-        self.company = None
+        self.entities = dict()
         # Characters with relationships with this character
         self.relationsByType = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
         self.typesByRelation = dict()
         # Relationship objects involving
         self.relationships = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
 
-    def setFamily(self, newFamily):
-        if self.family != None:
-            print("ERROR: Character already has family.")
-        self.family = newFamily
-        self.family.addMember(self)
+    def joinEntity(self, newEntity):
+        if newEntity.type in self.entities:
+            print("ERROR: Character already member of a %s entity." % str(newEntity.type))
+        self.entities[newEntity.type] = newEntity
+        newEntity.addMember(self)
 
     def getFullName(self):
         fullName = str(self.name)
-        if self.family:
-            fullName += " " + str(self.family.surname)
+        if rType.familial in self.entities:
+            fullName += " " + str(self.entities[rType.familial].surname)
         return fullName
 
     def addRelationship(self, charB, rel):
