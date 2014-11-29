@@ -166,7 +166,7 @@ class cast():
                 if strategy == "bfs":
                     members = self.gatherConnectedRelTypeMembersBreadthFirst(charA, relationshipType, maxMembers)
                 elif strategy == "dfs":
-                    members = self.gatherConnectedRelTypeMembersDepthFirst(charA, relationshipType, maxMembers)
+                    members = self.gatherConnectedRelTypeMembersDepthFirst(charA, relationshipType, members, maxMembers)
                 for member in members:
                     member.joinEntity(newEntity)
 
@@ -174,7 +174,7 @@ class cast():
         for charA in self.characters:
             charA.entities[relationshipType] = rship.createEntity[relationshipType]()
 
-    def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members):
+    def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members, maxMembers=-1):
         members.append(charA)
         for charB in charA.relationsByType[desiredType]:
             # Character accepted if not already accepted and doesn't already have typed entity

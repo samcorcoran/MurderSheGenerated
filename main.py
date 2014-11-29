@@ -45,7 +45,9 @@ c.generateRelationshipGroupings(rType.social, 3, numSocialGroups, numSocialites,
 
 # Create entities and make characters members of them
 maxFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
-c.createTypedEntities(rType.familial, random.randint(min(*maxFamilyMembers), maxFamilyMembers[1]), strategy="bfs")
+# If familial relations can belong to different families (married off) then random.randint(min(*maxFamilyMembers), maxFamilyMembers[1]) could be used
+# If familial relations must all belong t same family, then -1 should be used, for infinite depth
+c.createTypedEntities(rType.familial, -1, strategy="dfs")
 maxCompanyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
 c.createTypedEntities(rType.professional, random.randint(min(*maxCompanyMembers), maxCompanyMembers[1]), strategy="bfs")
 maxSocialGroupMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
