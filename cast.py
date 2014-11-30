@@ -172,7 +172,9 @@ class cast():
 
     def createIsolatedTypedEntities(self, relationshipType):
         for charA in self.characters:
-            charA.entities[relationshipType] = rship.createEntity[relationshipType]()
+            # Find characters who don't already have a typed entity
+            if not relationshipType in charA.entities.keys():
+                charA.joinEntity(rship.createEntity[relationshipType]())
 
     def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members, maxMembers=-1):
         members.append(charA)

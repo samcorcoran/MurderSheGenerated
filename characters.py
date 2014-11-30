@@ -22,8 +22,9 @@ class character(graph.vertex):
     def joinEntity(self, newEntity):
         if newEntity.type in self.entities:
             print("ERROR: Character already member of a %s entity." % str(newEntity.type))
-        self.entities[newEntity.type] = newEntity
-        newEntity.addMember(self)
+        else:
+            self.entities[newEntity.type] = newEntity
+            newEntity.addMember(self)
 
     def getFullName(self):
         fullName = str(self.name)
