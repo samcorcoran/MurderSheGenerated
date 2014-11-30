@@ -31,12 +31,12 @@ class cast():
         totalRelationships = self.getTotalRelationships()
         charATotalTypedRelationships = len(charA.relationships[relType])
         charBTotalTypedRelationships = len(charB.relationships[relType])
-        totalRelationshipsByParticipantsKeys = len(self.relationshipsByParticipants.keys())
+        totalRelationshipsByParticipantsKeys = len([x for x in self.relationshipsByParticipants.values() for item in x])
         # Create relationship object (does not affect state - not binding relationship until stored somewhere)
         rel = rship.relationship(charA, charB, relType)
         # Don't add relationship if already related
         if charB in charA.relationsByType[rel.type]:
-            print("WARNING: Attempted to create duplicate relationship (" + relType.name + ")")
+            print("WARNING: Attempted to create duplicate relationship (%s) between %s and %s" % (rel.type.name, charA.name, charB.name))
             return False
         # Store relationship object keyed by relationship type
         self.relationships[rel.type].append(rel)
@@ -52,7 +52,7 @@ class cast():
             print("ERROR: Relationship not correctly added to charA")
         if (charBTotalTypedRelationships+1 != len(charB.relationships[relType])):
             print("ERROR: Relationship not correctly added to charB")
-        if (totalRelationshipsByParticipantsKeys+2 != len(self.relationshipsByParticipants.keys())):
+        if (totalRelationshipsByParticipantsKeys+2 != len([x for x in self.relationshipsByParticipants.values() for item in x])):
             print("ERROR: Relationship not correctly added, keyed by participants")
         return True
 
