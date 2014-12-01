@@ -38,9 +38,9 @@ if (numSocialGroups[1] * numSocialites[1] > totalCharacters):
 print("Social parameters: number" + str(numSocialGroups) + ", size" + str(numSocialites))
 
 # Create typed relationships between characters
-c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
-c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
-c.generateRelationshipGroupings(rType.professional, 3, numEmployers, numEmployees, ConnectionStrategy.randomlyConnect)
+#c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
+#c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
+#c.generateRelationshipGroupings(rType.professional, 3, numEmployers, numEmployees, ConnectionStrategy.randomlyConnect)
 c.generateRelationshipGroupings(rType.social, 3, numSocialGroups, numSocialites, ConnectionStrategy.randomlyConnect)
 
 # Create entities and make characters members of them

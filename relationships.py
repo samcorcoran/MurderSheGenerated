@@ -58,6 +58,6 @@ class company(entity):
 class socialGroup(entity):
     def __init__(self):
         entity.__init__(self, relType.social)
-        self.socialGroupName = "unnamed";
+        self.socialGroupName = namegen.generateSocialClubName();
 
 createEntity = {relType.familial: family, relType.professional: company, relType.social: socialGroup}
