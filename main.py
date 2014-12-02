@@ -4,6 +4,7 @@ import cast
 from relationships import relType as rType
 from cast import ConnectionStrategy
 from characters import character
+from characters import gender
 
 # Create graph
 c = cast.cast()

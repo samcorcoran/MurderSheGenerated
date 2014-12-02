@@ -1,14 +1,22 @@
 import random
+from enum import Enum
 
 import namegen
 import graph
 from relationships import relType as rType
 
+class gender(Enum):
+    male = "male"
+    female = "female"
+
+    def getRandomGender():
+        return random.choice([gender.male, gender.female])
+
 class character(graph.vertex):
     """ Actor/agent within the story """
-    def __init__(self):
+    def __init__(self, charGender = None):
         graph.vertex.__init__(self)
-        self.gender = random.choice(['m','f'])
+        self.gender = charGender if charGender else gender.getRandomGender()
         self.name = namegen.generateFirstName(self.gender)
         self.victim = False
         # Entity associations
