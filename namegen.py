@@ -48,7 +48,7 @@ socialActivities.sort()
 socialPostfixes.sort()
 
 def generateSocialClubName():
-    prefix = socialPrefixes.pop()
+    prefix = random.choice(socialPrefixes)
     noun = socialNouns.pop()
     activity = socialActivities.pop()
     postfix = socialPostfixes.pop()
