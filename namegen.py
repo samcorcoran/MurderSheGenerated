@@ -1,7 +1,7 @@
 import random
 
-maleFirstNames = ['Albert', 'Bancroft', 'Frederick', 'Garrett', 'Hale', 'Johnson', 'Kipling', 'Landon', 'Mathis', 'Neville', 'Oswald', 'Quinn', 'Rodger', 'Sutherland', 'Thurston']
-femaleFirstNames = ['Ansley', 'Bernadine', 'Florence', 'Gertrude', 'Grace', 'Katelyn', 'Lilith', 'Margot', 'Odelia', 'Ophelia', 'Victoria']
+maleFirstNames = ['Albert', 'Bancroft', 'Frederick', 'Garrett', 'Hale', 'Johnson', 'Kipling', 'Landon', 'Mathis', 'Neville', 'Oswald', 'Quinn', 'Rodger', 'Sutherland', 'Thurston', 'Hugo', 'Reginald', 'Walter', 'Tarquin', 'Terrence', 'Tobias', 'Gideon', 'Errol', 'Perry']
+femaleFirstNames = ['Ansley', 'Bernadine', 'Florence', 'Gertrude', 'Grace', 'Katelyn', 'Lilith', 'Margot', 'Odelia', 'Ophelia', 'Victoria', 'Violet', 'Cecilia', 'Claudia', 'Felicity', 'Vera', 'Tabitha', 'Henrietta', 'Vivian', 'Elaine', 'Prudence', 'Norah']
 surnames = ['Annesley', 'Asquith', 'Bankes', 'Buxton', 'Cadogan', 'Calvert', 'Cootes', 'Duncombe', 'Egerton', 'Fortescue', 'Guinness', 'Harley', 'Lambton', 'Mortimer', 'Osborne', 'Paget', 'Phipps', 'Runciman', 'Stopford', 'Talbot', 'Vane-Tempest', 'Walpole']
 
 maleFirstNames.sort()
@@ -14,13 +14,10 @@ def generateFirstName(gender):
         nameChoices = maleFirstNames
     else:
         nameChoices = femaleFirstNames
-    name = random.choice(nameChoices)
-    nameChoices.remove(name)
-    return name
+    return nameChoices.pop()
 
 def generateSurname():
-    surname = random.choice(surnames)
-    surnames.remove(surname)
+    surname = surnames.pop()
     return surname
 
 companyAdjectives = ["Red", "Blue", "Frosty", "Docile", "Quiet", "Rampant", "Mischievious", "Quixotic"]
@@ -51,5 +48,5 @@ def generateSocialClubName():
     prefix = random.choice(socialPrefixes)
     noun = socialNouns.pop()
     activity = socialActivities.pop()
-    postfix = socialPostfixes.pop()
+    postfix = random.choice(socialPostfixes)
     return ' '.join([prefix, noun, activity, postfix])
