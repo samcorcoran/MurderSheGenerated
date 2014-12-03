@@ -10,9 +10,11 @@ from characters import gender
 c = cast.cast()
 # Add characters
 totalCharacters = random.randint(4, 15)
+
+characterGenders = [gender.getRandomGender() for x in range(totalCharacters)]
 print("TOTAL CHARACTERS: " + str(totalCharacters))
-for n in range(totalCharacters):
-    c.addCharacter(character())
+for charGender in characterGenders:
+    c.addCharacter(character(charGender))
 
 # GENERATE FAMILIAL RELATIONSHIP NETWORK
 numFamilies = (int(totalCharacters/6), int(totalCharacters/3))
