@@ -22,8 +22,10 @@ class Relationship:
     def __init__(self, charA, charB, relType):
         self.members = (charA, charB)
         self.type = relType
-        self.nature = None
+        self.roles = list()
         self.publicKnowledge = True
+        self.whoKnows = list()
+        self.whoSuspects = list()
 
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
 
