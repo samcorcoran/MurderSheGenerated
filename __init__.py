@@ -1,20 +1,22 @@
+import json
 from flask import Flask
-from main import generateMystery
 from werkzeug.debug import get_current_traceback
+from main import generateMystery
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
+@app.route('/cast/<int:num_players>')
+def mystery(num_players):
     try:
-        result = generateMystery()
+        cast, result = generateMystery(num_players)
         print(result)
+        return json.dumps(cast.toDict())
     except Exception as e:
-        track= get_current_traceback(skip=1, show_hidden_frames=True,
+        print(e)
+        track = get_current_traceback(skip=1, show_hidden_frames=True,
             ignore_system_exceptions=False)
         track.log()
         abort(500)
-    return result
 
 if __name__ == '__main__':
     app.run()

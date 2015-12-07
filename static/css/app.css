@@ -1,0 +1,97 @@
+.cast-true {
+  text-decoration: line-through;
+  text-color: default;
+  pointer-events: none;
+  cursor: default;
+}
+
+.list-group-item.disabled,
+.list-group-item.disabled {
+  color: #999999;
+  background-color: #f5f5f5;
+}
+
+.list-group-item-info.disabled:hover,
+.list-group-item-info.disabled:focus,
+.list-group-item.disabled:hover,
+.list-group-item.disabled:focus,
+{
+  color: #999999;
+  background-color: #f5f5f5;
+  text-decoration: none;
+}
+
+div.level, div.class {
+  padding-bottom: 1em;
+}
+
+div.list-group-item > a,
+div.list-group-item > h4.list-group-item-heading a {
+  color: #333333;
+}
+
+div.list-group-item-info > a,
+div.list-group-item-info > h4.list-group-item-heading a {
+  color: #31708f;
+}
+
+div.list-group-item.disabled > a,
+div.list-group-item.disabled > h4.list-group-item-heading a {
+  color: #999999;
+}
+
+.panel-heading > .panel-title > .accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+}
+.panel-heading.collapsed > .panel-title > .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
+
+.label-as-badge {
+    border-radius: 1em;
+    position: relative;
+    top: -.1em;
+    padding-top: .3em;
+    margin-left: .3em;
+}
+
+.list-group-item-text > p {
+  margin-bottom: 5px;
+}
+
+.list-group-item-text > p:last-child {
+  margin-bottom: 0px;
+}
+
+.edit {
+  float: right;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .2;
+  filter: alpha(opacity=20);
+  margin-right: 10px;
+}
+
+.edit:hover, .edit:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+    filter: alpha(opacity=50);
+}
+button.edit {
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.checkbox {
+  margin-left: 25px;
+}

@@ -1,0 +1,16 @@
+<div class="row">
+  <div id="character-list" class="col-md-12">
+    <h3>The Suspects</h3>
+    <div class="list-group characters">
+      <div ng-repeat="character in cast | orderBy: 'id'"class="list-group-item">
+        <h4>{{character.name}} <small>Player {{character.id + 1}}</small></h4>
+        <ul ng-if="character.relationships">
+          <li ng-repeat="relationship in character.relationships | orderBy: 'id' | orderBy: 'types'">{{relationship | phrasing}}</li>
+        </ul>
+        <p ng-if="!character.relationships.length">A stranger, never seen around town... until tonight.</p>
+      </div>
+    </div>
+    <p ng-show="!cast.length">No cast found. Oops!</p>
+  </div>
+  <div character-uploader></div>
+</div>
