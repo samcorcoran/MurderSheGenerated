@@ -2,30 +2,40 @@ import random
 from enum import Enum
 
 import namegen
-import graph
-from relationships import relType as rType
+from graph import Vertex
+from relationships import RelationshipType
 
-class gender(Enum):
+class Gender(Enum):
     male = "male"
     female = "female"
 
     def getRandomGender():
-        return random.choice([gender.male, gender.female])
+        return random.choice([Gender.male, Gender.female])
 
-class character(graph.vertex):
+class Character(Vertex):
     """ Actor/agent within the story """
-    def __init__(self, charGender = None):
-        graph.vertex.__init__(self)
+    def __init__(self, id, charGender = None):
+        super().__init__(id)
         self.gender = charGender if charGender else gender.getRandomGender()
         self.name = namegen.generateFirstName(self.gender)
         self.victim = False
         # Entity associations
         self.entities = dict()
         # Characters with relationships with this character
-        self.relationsByType = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
+        self.relationsByType = {
+            RelationshipType.familial :list(),
+            RelationshipType.professional: list(),
+            RelationshipType.social: list(),
+            RelationshipType.romantic: list()
+            }
         self.typesByRelation = dict()
         # Relationship objects involving
-        self.relationships = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
+        self.relationships = {
+            RelationshipType.familial: list(),
+            RelationshipType.professional: list(),
+            RelationshipType.social: list(),
+            RelationshipType.romantic: list()
+            }
 
     def joinEntity(self, newEntity):
         if newEntity.type in self.entities:
@@ -36,8 +46,8 @@ class character(graph.vertex):
 
     def getFullName(self):
         fullName = str(self.name)
-        if rType.familial in self.entities:
-            fullName += " " + str(self.entities[rType.familial].surname)
+        if RelationshipType.familial in self.entities:
+            fullName += " " + str(self.entities[RelationshipType.familial].name)
         return fullName
 
     def addRelationship(self, charB, rel):

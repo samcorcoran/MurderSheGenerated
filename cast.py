@@ -1,42 +1,64 @@
-import random
-from pprint import pprint
 from enum import Enum
 import itertools
+import random
 
-import graph
-import relationships as rship
-from relationships import relType as rType
+from graph import Graph
+from characters import Character, Gender
+from relationships import Relationship, RelationshipType, Family, entities
 
 class ConnectionStrategy(Enum):
     totallyConnect = "total"
     randomlyConnect = "random"
     stringConnect = "string"
 
-class cast():
+class Cast():
     """ Network of relationships between characters """
     def __init__(self):
         self.characters = list()
         # Lists of relationship objects, keyed by type
-        self.relationships = {rType.familial:list(), rType.professional:list(), rType.social:list(), rType.romantic:list()}
+        self.relationships = {
+            RelationshipType.familial: list(),
+            RelationshipType.professional:list(),
+            RelationshipType.social:list(),
+            RelationshipType.romantic:list()
+            }
         # Lists of relationship objects, keyed by participants
         self.relationshipsByParticipants = dict()
+
+        self.entities = dict()
+
+    def addEntity(self, entity):
+        if not entity.type in self.entities:
+            self.entities[entity.type] = list()
+        self.entities[entity.type].append(entity)
+
+    def totalTypedEntities(self, relationshipType):
+        if not relationshipType in self.entities:
+            self.entities[relationshipType] = list()
+        return len(self.entities[relationshipType])
 
     def getAllRelationships(self):
         return [item for sublist in self.relationships for item in sublist]
 
-    def addCharacter(self, c):
+    def addCharacter(self, c = None):
+        if c == None:
+            c = Character(len(self.characters), Gender.getRandomGender())
         self.characters.append(c)
 
     def createRelationship(self, charA, charB, relType):
         totalRelationships = self.getTotalRelationships()
         charATotalTypedRelationships = len(charA.relationships[relType])
         charBTotalTypedRelationships = len(charB.relationships[relType])
-        totalRelationshipsByParticipantsKeys = len([x for x in self.relationshipsByParticipants.values() for item in x])
-        # Create relationship object (does not affect state - not binding relationship until stored somewhere)
-        rel = rship.relationship(charA, charB, relType)
+        totalRelationshipsByParticipantsKeys = len(
+            [x for x in self.relationshipsByParticipants.values() for item in x]
+            )
+        # Create relationship object (does not affect state - not binding relationship
+        # until stored somewhere)
+        rel = Relationship(charA, charB, relType)
         # Don't add relationship if already related
         if charB in charA.relationsByType[rel.type]:
-            print("WARNING: Attempted to create duplicate relationship (%s) between %s and %s" % (rel.type.name, charA.name, charB.name))
+            print("WARNING: Attempted to create duplicate relationship ",
+                "(%s) between %s and %s" % (rel.type.name, charA.name, charB.name))
             return False
         # Store relationship object keyed by relationship type
         self.relationships[rel.type].append(rel)
@@ -94,12 +116,14 @@ class cast():
 
     def generateNonPlotFamilies(self):
         """ Create single-member non-plot families """
-        candidates = self.gatherCandidates(rType.familial, 1)
+        candidates = self.gatherCandidates(RelationshipType.familial, 1)
         for charA in candidates:
-            charA.family = rship.family()
+            charA.family = Family()
+            self.addEntity(charA.family)
 
-    def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax, groupSizeMinMax, connectionStrategy):
-        """ Gathers candidates and forms groups connected by typed relationships based on parameters """
+    def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
+                                      groupSizeMinMax, connectionStrategy):
+        """ Gathers candidates and forms groups connected by typed relationships """
         numGroups = random.randint(min(*numGroupsMinMax), numGroupsMinMax[1])
         print("Num [" + relationshipType.name + "] groups: " + str(numGroups))
         for groupNum in range(numGroups):
@@ -123,7 +147,7 @@ class cast():
         pass
 
     def connectCandidates(self, groupMembers, strategy, relationshipType):
-        """ Relationships (of relType) are created between group members based on given strategy """
+        """ Relationships (of relType) are created between group members based strategy """
         if strategy == ConnectionStrategy.totallyConnect:
             # Every member is related to every other
             for pairing in itertools.combinations(groupMembers, 2):
@@ -141,7 +165,11 @@ class cast():
                     alreadyConnected.append(charA)
                 else:
                     # Connect to existing member of 'in-group'
-                    self.createRelationship(charA, random.choice(alreadyConnected), relationshipType)
+                    self.createRelationship(
+                        charA,
+                        random.choice(alreadyConnected),
+                        relationshipType
+                        )
                 # Track character as member of in-group
                 alreadyConnected.append(charA)
         else:
@@ -157,11 +185,12 @@ class cast():
         return candidates
 
     def createTypedEntities(self, relationshipType, maxMembers, strategy = "bfs"):
-        """ Finds characters missing typed entity and creates one, including typed relations based params """
+        """ Finds characters missing typed entity and creates one """
         for charA in self.characters:
             if not relationshipType in charA.entities and charA.relationsByType[relationshipType]:
                 # Has relations but no associated entity
-                newEntity = rship.createEntity[relationshipType]()
+                newEntity = entities[relationshipType](len(self.entities))
+                self.addEntity(newEntity)
                 members = list()
                 if strategy == "bfs":
                     members = self.gatherConnectedRelTypeMembersBreadthFirst(charA, relationshipType, maxMembers)
@@ -174,7 +203,9 @@ class cast():
         for charA in self.characters:
             # Find characters who don't already have a typed entity
             if not relationshipType in charA.entities.keys():
-                charA.joinEntity(rship.createEntity[relationshipType]())
+                newEntity = entities[relationshipType](len(self.entities))
+                self.addEntity(newEntity)
+                charA.joinEntity(newEntity)
 
     def gatherConnectedRelTypeMembersDepthFirst(self, charA, desiredType, members, maxMembers=-1):
         members.append(charA)
@@ -199,3 +230,21 @@ class cast():
         # Return full set if no maximum was set
         return leaves
 
+    def toDict(self):
+        def getRelationship(char, relation):
+            out = dict()
+            out["character"] = {
+                "name": relation.getFullName(),
+                "id": relation.id
+                }
+            out["types"] = str([x.type.name for x in char.typesByRelation[relation]])
+            return out
+
+        def getCharacter(char):
+            return {
+             "id": char.id,
+             "name": char.getFullName(),
+             "relationships": [getRelationship(char, r) for r in char.typesByRelation.keys()]
+             }
+
+        return [getCharacter(c) for c in self.characters]

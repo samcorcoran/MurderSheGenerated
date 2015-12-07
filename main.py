@@ -1,23 +1,22 @@
 import random
 
-import cast
-from relationships import relType as rType
-from cast import ConnectionStrategy
-from characters import character
-from characters import gender
+from cast import Cast, ConnectionStrategy
+from relationships import RelationshipType
+from characters import Character, Gender
 
-def generateMystery():
+def generateMystery(characters):
     out = ""
 
     # Create graph
-    c = cast.cast()
-    # Add characters
-    totalCharacters = random.randint(4, 15)
+    c = Cast()
 
-    characterGenders = [gender.getRandomGender() for x in range(totalCharacters)]
-    out += "\n" + "TOTAL CHARACTERS: " + str(totalCharacters)
-    for charGender in characterGenders:
-        c.addCharacter(character(charGender))
+    # Add characters
+    if characters is not None:
+        totalCharacters = characters
+    else:
+        totalCharacters = random.randint(4, 15)
+    [c.addCharacter() for x in range(totalCharacters)]
+    out += "\nTOTAL CHARACTERS: %d" % len(c.characters)
 
     # GENERATE FAMILIAL RELATIONSHIP NETWORK
     numFamilies = (int(totalCharacters/6), int(totalCharacters/3))
@@ -44,33 +43,25 @@ def generateMystery():
     out += "\n" + "Social parameters: number" + str(numSocialGroups) + ", size" + str(numSocialites)
 
     # Create typed relationships between characters
-    c.generateRelationshipGroupings(rType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
-    c.generateRelationshipGroupings(rType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
-    c.generateRelationshipGroupings(rType.professional, 3, numEmployers, numEmployees, ConnectionStrategy.randomlyConnect)
-    c.generateRelationshipGroupings(rType.social, 3, numSocialGroups, numSocialites, ConnectionStrategy.randomlyConnect)
+    c.generateRelationshipGroupings(RelationshipType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
+    c.generateRelationshipGroupings(RelationshipType.romantic, -1, (numRomances, numRomances), (2,2), ConnectionStrategy.totallyConnect)
+    c.generateRelationshipGroupings(RelationshipType.professional, 3, numEmployers, numEmployees, ConnectionStrategy.randomlyConnect)
+    c.generateRelationshipGroupings(RelationshipType.social, 3, numSocialGroups, numSocialites, ConnectionStrategy.randomlyConnect)
 
     # Create entities and make characters members of them
     maxFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
     # If familial relations can belong to different families (married off) then random.randint(min(*maxFamilyMembers), maxFamilyMembers[1]) could be used
     # If familial relations must all belong t same family, then -1 should be used, for infinite depth
-    c.createTypedEntities(rType.familial, -1, strategy="bfs")
+    c.createTypedEntities(RelationshipType.familial, -1, strategy="bfs")
     maxCompanyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
-    c.createTypedEntities(rType.professional, random.randint(min(*maxCompanyMembers), maxCompanyMembers[1]), strategy="bfs")
+    c.createTypedEntities(RelationshipType.professional, random.randint(min(*maxCompanyMembers), maxCompanyMembers[1]), strategy="bfs")
     maxSocialGroupMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
-    c.createTypedEntities(rType.social, random.randint(min(*maxSocialGroupMembers), maxSocialGroupMembers[1]), strategy="bfs")
+    c.createTypedEntities(RelationshipType.social, random.randint(min(*maxSocialGroupMembers), maxSocialGroupMembers[1]), strategy="bfs")
 
     # Fill in remaining details
-    c.createIsolatedTypedEntities(rType.familial)
+    c.createIsolatedTypedEntities(RelationshipType.familial)
 
-    # Print names
-    out += "\n" + "- Relationships -"
-    for char in c.characters:
-        out += "\n" + char.getFullName() + " [" + str(char.id) + "]"
-        for relation in char.typesByRelation.keys():
-            out += "\n" + "    - " + relation.getFullName() + " [" + str(relation.id) + "] " + "(" + str([x.type.name for x in char.typesByRelation[relation]]) + ")"
-
-    return out
-
+    return (c, out)
 
 if __name__ == '__main__':
     generateMystery();

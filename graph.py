@@ -1,11 +1,10 @@
 import uuid
 import random
 
-vertexCount = 0
-
-class graph():
+class Graph:
     def __init__(self):
         self.edges = dict()
+        self.vertexCount = 0
 
     def addVertex(self, v):
         """ Vertex not already in graph will be added """
@@ -13,6 +12,7 @@ class graph():
             print("ERROR: Vertex already exists in dictionary")
             return
         self.edges[v] = list()
+        self.vertexCount += 1
 
     def addEdge(self, v1, v2):
         """ Directed edge created from v1 to v2 """
@@ -54,15 +54,11 @@ class graph():
                 v2 = random.choice(self.edges[v1])
         self.removeUndirectedEdge(v1, v2)
 
+        def getNumVertices(self):
+            return self.vertexCount;
 
-class vertex():
-    def __init__(self):
+
+class Vertex:
+    def __init__(self, id):
         self.uuid = uuid.uuid4()
-        self.id = self.getId()
-
-    def getId(self):
-        global vertexCount
-        id = vertexCount
-        vertexCount += 1
-        return id
-
+        self.id = id;
