@@ -7,6 +7,43 @@ from characters import Character, Gender
 from namegen import NameGenerator
 from relationships import Relationship, RelationshipType, Family, entities
 
+
+def getRelationship(char, relation):
+    out = dict()
+    out["character"] = {
+        "name": relation.getFullName(),
+        "id": relation.id
+        }
+    out["types"] = [x.type.name for x in char.typesByRelation[relation]]
+    return out
+
+def getCharacter(char, relationships=True):
+    out = {
+        "id": char.id,
+        "name": char.getFullName(),
+        "gender": char.gender.name
+    }
+    if char.id == 0:
+        out["victim"] = True
+    if relationships:
+        out["relationships"] = [getRelationship(char, r) for r in char.typesByRelation.keys()]
+    return out
+
+def getMurderer(char):
+    c = getCharacter(char)
+    c["murderer"] = True
+    return c
+
+def getEntity(e, type):
+    return {
+      "name": e.name,
+      "type": type.name,
+      "members": [getCharacter(c, relationships=False) for c in e.members]
+      }
+
+def getEntities(type, entities):
+    return [getEntity(e, type) for e in entities[type]]
+
 class ConnectionStrategy(Enum):
     totallyConnect = "total"
     randomlyConnect = "random"
@@ -42,12 +79,12 @@ class Cast():
     def getAllRelationships(self):
         return [item for sublist in self.relationships for item in sublist]
 
-    def addCharacter(self, c = None):
-        if c == None:
+    def addCharacter(self, name = None, gender = None):
+        if gender == None:
             gender = Gender.getRandomGender()
+        if name == None:
             name = self.namegen.generateFirstName(gender)
-            c = Character(len(self.characters), name, gender)
-        print(c.name, c.gender)
+        c = Character(len(self.characters), name, gender)
         self.characters.append(c)
 
     def createRelationship(self, charA, charB, relType):
@@ -235,38 +272,46 @@ class Cast():
         # Return full set if no maximum was set
         return leaves
 
+    def mostCommonConnection(self, L):
+        groups = itertools.groupby(sorted(L))
+        def auxfun(item):
+            return len(list(item[1])), -L.index(item[0])
+        return max(groups, key=auxfun)[0]
+
     def toDict(self):
-        def getRelationship(char, relation):
-            out = dict()
-            out["character"] = {
-                "name": relation.getFullName(),
-                "id": relation.id
-                }
-            out["types"] = [x.type.name for x in char.typesByRelation[relation]]
-            return out
-
-        def getCharacter(char, relationships=True):
-            out = {
-                "id": char.id,
-                "name": char.getFullName(),
-                "gender": char.gender.name
-            }
-            if relationships:
-                out["relationships"] = [getRelationship(char, r) for r in char.typesByRelation.keys()]
-            return out
-
-        def getEntity(e, type):
-            return {
-              "name": e.name,
-              "type": type.name,
-              "members": [getCharacter(c, relationships=False) for c in e.members]
-              }
-
-        def getEntities(type):
-            return [getEntity(e, type) for e in self.entities[type]]
-
-        groups = [getEntities(type) for type in self.entities.keys() if type.name != "familial"]
+        groups = [getEntities(type, self.entities) for type in self.entities.keys() if type.name != "familial"]
+        id = self.mostCommonConnection(
+            [c["character"]["id"] for c in getCharacter(self.characters[0])["relationships"]]
+            )
+        murderer = getCharacter([c for c in self.characters if c.id == id][0])
+        characters = [getMurderer(c) if c.id == murderer["id"] else getCharacter(c) for c in self.characters]
         return {
-            "characters": [getCharacter(c) for c in self.characters],
-            "groups": [item for sublist in groups for item in sublist]
+            "characters": characters,
+            "groups": [item for sublist in groups for item in sublist],
+            "investigator": self.investigator,
+            "murderer": murderer
             }
+
+    def generateLocation(self):
+        return self.namegen.generateLocation()
+
+    def generateScene(self, location):
+        victim = self.characters[0]
+        types = [etype for etype in self.entities.keys() if etype.name != "familial"]
+        groups = [self.entities[etype] for etype in types]
+        investigator_title = random.choice(self.namegen.investigatorTitles)
+        investigator_surname = random.choice(self.namegen.surnames)
+        self.investigator = "%s %s" % (investigator_title, investigator_surname)
+        return self.namegen.generateScene(
+            location,
+            victim,
+            investigator_title,
+            investigator_surname,
+            [item for sublist in groups for item in sublist]
+            )
+
+    def generateTitle(self):
+        return "The %s of %s" % (
+            self.namegen.generateTitle(),
+            self.characters[0].getFullName()
+        )

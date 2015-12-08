@@ -6853,7 +6853,30 @@ button.close {
   color: #fff;
 }
 @media print {
-  h1,h2,h3,h4,h5,h6 { font-weight: 400; }
-  .character { page-break-inside: avoid; }
-  #the-setup { page-break-after: always; }
+  h1,h2,h3,h4,h5,h6 {
+    font-weight: 400;
+  }
+  .character {
+    page-break-inside: avoid;
+    border-bottom: 2px solid #fff;
+  }
+  #the-details, #the-setup {
+    page-break-after: always;
+  }
+}
+#quote {
+  margin-above: 30px;
+}
+@media screen and (min-width: 992px) {
+  #character-list {
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+  }
+
+  .character {
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+    column-break-inside: avoid;
+  }
 }

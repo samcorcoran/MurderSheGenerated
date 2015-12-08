@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css" />
     <script src="js/vendor/angular.js"></script>
-    <script src="js/vendor/angular-ui-router.min.js"></script>
     <script src="js/vendor/angular-resource.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/directives.js"></script>
@@ -16,17 +15,58 @@
   </head>
   <body>
 	  <div class="container">
-      <div class="row hidden-print">
-        <div class="col-md-12">
-          <h1>Murder, She Generated</h1>
-          <blockquote ng-controller="QuoteCtrl">
-            <p>{{quote.text}}</p>
-            <small>{{quote.source}}</small>
-          </blockquote>
+      <div ng-controller="MysteryCtrl" ng-hide="title == ''">
+        <div id="the-details" class="row">
+          <div class="col-xs-12">
+            <h1>{{title}}: a murder mystery game for {{suspects.length}} players.</h1>
+            <p class="lead">{{scene[0]}}</p>
+            <p ng-repeat="paragraph in scene.slice(1)">{{paragraph}}</p>
+            <h4>Instructions (for the host's eyes only!)</h4>
+            <p>
+              As host, you will play the part of {{investigator}}. Your guests will play the parts of the suspects.
+              It is up to you to interrogate them over the course of the evening, revealing the sometimes shocking
+              connections hidden within this quiet community, and ultimately solving the murder.
+            </p>
+            <p>
+              As {{investigator}}, you already have all the pertinent information about the victim, the {{location}}, and
+              your suspects. You even know whodunnit. In effect, you hold all the cards. But tonight is your chance for
+              some theatre, for a dramatic reveal. Tonight is the night you unmask a killer.
+            </p>
+            <p>
+              Your hapless suspects know none of this - until you choose to reveal it in the course of your
+              investigators, casting aspersions and uncovering guilt. Initially, each player knows only those
+              few bullet points of information provided below under each name.
+            </p>
+            <p>
+              During the game, players are allowed to keep any or all of their bullet points a secret - but they
+              must not directly lie about it, obscure it, or deny it when accused. It's your job to draw them out,
+              spark accusations, enflame tensions, and trick your suspects into incriminating themselves.
+            </p>
+            <p>
+              Read everything carefully before you hand out individual suspect information to your guests!</p>
+            </p>
+          </div>
+        </div>
+        <div cast></div>
+        <div class="row hidden-print">
+          <div permalink></div>
+        </div>
+        <div class="row hidden-print" id="quote">/
+          <div class="col-xs-12" ng-controller="QuoteCtrl">
+            <blockquote>
+              <p>{{quote.text}}</p>
+              <small>{{quote.source}}</small>
+            </blockquote>
+          </div>
         </div>
       </div>
-      <div class="view-container">
-        <div ui-view class="view-frame"></div>
+      <div ng-controller="MysteryCtrl" ng-hide="title != ''">
+         <div class="row">
+            <div class="col-xs-12">
+              <h2>Writing the mystery...</h2>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="js/vendor/jquery.min.js"></script>

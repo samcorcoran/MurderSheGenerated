@@ -40,13 +40,22 @@ class Family(Entity):
     def __init__(self, id, name):
         super().__init__(id, name, RelationshipType.familial)
 
+    def getLocation(self):
+        return "%s residence" % self.name
+
 class Company(Entity):
     def __init__(self, id, name):
         super().__init__(id, name, RelationshipType.professional)
 
+    def getLocation(self):
+        return "%s head offices" % self.name
+
 class SocialGroup(Entity):
     def __init__(self, id, name):
         super().__init__(id, name, RelationshipType.social)
+
+    def getLocation(self):
+        return "%s clubhouse" % self.name
 
 entities = {
     RelationshipType.familial: Family,

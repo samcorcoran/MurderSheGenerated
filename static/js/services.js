@@ -4,26 +4,26 @@
 
 var murderServices = angular.module('murderServices', ['ngResource']);
 
-murderServices.factory('Cast', ['$http', function($http) {
+murderServices.factory('Mystery', ['$http', function($http) {
 	var initialized = false;
-	var cast = [];
+	var mystery = [];
 
-	function castingCall(players) {
-		console.log("Casting call!");
-		cast = $http.get('/cast/' + players).then(function(httpResponse) {
+	function writeMystery(players) {
+		console.log("Writing the mystery...");
+		mystery = $http.get('/players/' + players).then(function(httpResponse) {
 	    if(httpResponse == null) return null;
-			console.log("Cast assembled.");
+			console.log("Mystery solved!");
       initialized = true;
 	    return httpResponse.data;
 	  }).catch(function(err) {
 	    console.error(err);
 	  });
-		return cast;
+		return mystery;
 	}
 
   let f = {};
 
-  f.query = function(players) { return (initialized && cast.length == players ? cast : castingCall(players)) };
+  f.query = function(players) { return (initialized && mystery.cast.length == players ? mystery : writeMystery(players)) };
 
   return f;
 }]);
