@@ -1,8 +1,14 @@
-<div id="the-setup" class="col-md-6">
-  <h3>The Victim</h3>
-  <victim character="victim"></victim>
+<div id="the-setup">
+  <div id="the-victim" class="col-lg-4 col-md-8 col-sm-8 col-xs-12">
+    <h3>The Victim</h3>
+    <victim character="victim"></victim>
+  </div>
+  <div id="the-village" class="col-lg-4 col-md-8 col-sm-8 col-xs-12">
+    <h3>The Village</h3>
+    <group ng-repeat="group in groups" group="group"></group>
+  </div>
 </div>
-<div id="character-list" class="col-md-6">
+<div id="character-list" class="col-lg-4 col-md-8 col-sm-8 col-xs-12">
   <h3>The Suspects</h3>
   <suspect ng-repeat="suspect in suspects | orderBy: 'id'" character="suspect"></suspect>
 </div>

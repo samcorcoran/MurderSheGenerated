@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/vendor/bootstrap.css" />
-    <link rel="stylesheet" href="css/murder.css" />
+    <link rel="stylesheet" href="css/bootstrap.css" />
     <script src="js/vendor/angular.js"></script>
     <script src="js/vendor/angular-ui-router.min.js"></script>
     <script src="js/vendor/angular-resource.min.js"></script>
@@ -17,12 +16,15 @@
   </head>
   <body>
 	  <div class="container">
-      <div class="row">
-          <div class="col-md-12">
-            <h1>Murder, She Generated</h1>
-            <p class="lead">Automagical murder mysteries</p>
-          </div>
+      <div class="row hidden-print">
+        <div class="col-md-12">
+          <h1>Murder, She Generated</h1>
+          <blockquote ng-controller="QuoteCtrl">
+            <p>{{quote.text}}</p>
+            <small>{{quote.source}}</small>
+          </blockquote>
         </div>
+      </div>
       <div class="view-container">
         <div ui-view class="view-frame"></div>
       </div>

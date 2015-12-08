@@ -4,6 +4,7 @@ import random
 
 from graph import Graph
 from characters import Character, Gender
+from namegen import NameGenerator
 from relationships import Relationship, RelationshipType, Family, entities
 
 class ConnectionStrategy(Enum):
@@ -15,6 +16,7 @@ class Cast():
     """ Network of relationships between characters """
     def __init__(self):
         self.characters = list()
+        self.namegen = NameGenerator()
         # Lists of relationship objects, keyed by type
         self.relationships = {
             RelationshipType.familial: list(),
@@ -42,7 +44,10 @@ class Cast():
 
     def addCharacter(self, c = None):
         if c == None:
-            c = Character(len(self.characters), Gender.getRandomGender())
+            gender = Gender.getRandomGender()
+            name = self.namegen.generateFirstName(gender)
+            c = Character(len(self.characters), name, gender)
+        print(c.name, c.gender)
         self.characters.append(c)
 
     def createRelationship(self, charA, charB, relType):
@@ -118,7 +123,7 @@ class Cast():
         """ Create single-member non-plot families """
         candidates = self.gatherCandidates(RelationshipType.familial, 1)
         for charA in candidates:
-            charA.family = Family()
+            charA.family = Family(len(self.entities), self.namegen.generateSurname())
             self.addEntity(charA.family)
 
     def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
@@ -189,7 +194,7 @@ class Cast():
         for charA in self.characters:
             if not relationshipType in charA.entities and charA.relationsByType[relationshipType]:
                 # Has relations but no associated entity
-                newEntity = entities[relationshipType](len(self.entities))
+                newEntity = entities[relationshipType](len(self.entities), self.namegen.generateName(relationshipType.name))
                 self.addEntity(newEntity)
                 members = list()
                 if strategy == "bfs":
@@ -203,7 +208,7 @@ class Cast():
         for charA in self.characters:
             # Find characters who don't already have a typed entity
             if not relationshipType in charA.entities.keys():
-                newEntity = entities[relationshipType](len(self.entities))
+                newEntity = entities[relationshipType](len(self.entities), self.namegen.generateName(relationshipType.name))
                 self.addEntity(newEntity)
                 charA.joinEntity(newEntity)
 
@@ -237,14 +242,31 @@ class Cast():
                 "name": relation.getFullName(),
                 "id": relation.id
                 }
-            out["types"] = str([x.type.name for x in char.typesByRelation[relation]])
+            out["types"] = [x.type.name for x in char.typesByRelation[relation]]
             return out
 
-        def getCharacter(char):
-            return {
-             "id": char.id,
-             "name": char.getFullName(),
-             "relationships": [getRelationship(char, r) for r in char.typesByRelation.keys()]
-             }
+        def getCharacter(char, relationships=True):
+            out = {
+                "id": char.id,
+                "name": char.getFullName(),
+                "gender": char.gender.name
+            }
+            if relationships:
+                out["relationships"] = [getRelationship(char, r) for r in char.typesByRelation.keys()]
+            return out
 
-        return [getCharacter(c) for c in self.characters]
+        def getEntity(e, type):
+            return {
+              "name": e.name,
+              "type": type.name,
+              "members": [getCharacter(c, relationships=False) for c in e.members]
+              }
+
+        def getEntities(type):
+            return [getEntity(e, type) for e in self.entities[type]]
+
+        groups = [getEntities(type) for type in self.entities.keys() if type.name != "familial"]
+        return {
+            "characters": [getCharacter(c) for c in self.characters],
+            "groups": [item for sublist in groups for item in sublist]
+            }

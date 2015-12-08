@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 
-import namegen
+from namegen import NameGenerator
 
 class RelationshipType(Enum):
     familial = "familial"
@@ -37,28 +37,16 @@ class Entity:
         self.members.append(newMember)
 
 class Family(Entity):
-    def __init__(self, id):
-        super().__init__(
-            id,
-            namegen.generateSurname(),
-            RelationshipType.familial
-            )
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.familial)
 
 class Company(Entity):
-    def __init__(self, id):
-        super().__init__(
-            id,
-            namegen.generateCompanyName(),
-            RelationshipType.professional
-            )
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.professional)
 
 class SocialGroup(Entity):
-    def __init__(self, id):
-        super().__init__(
-            id,
-            namegen.generateSocialClubName(),
-            RelationshipType.social
-            )
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.social)
 
 entities = {
     RelationshipType.familial: Family,

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=News+Cycle:400,700");
+@import url("https://fonts.googleapis.com/css?family=Sorts+Mill+Goudy|IM+Fell+DW+Pica");
 /*!
  * bootswatch v3.3.6
  * Homepage: http://bootswatch.com
@@ -1086,11 +1086,11 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Sorts Mill Goudy", Georgia, "Times New Roman", Times, serif;
   font-size: 15px;
   line-height: 1.42857143;
-  color: #777777;
-  background-color: #ffffff;
+  color: #2f2f2f;
+  background-color: #f9f7f1;
 }
 input,
 button,
@@ -1135,7 +1135,7 @@ img {
 .img-thumbnail {
   padding: 4px;
   line-height: 1.42857143;
-  background-color: #ffffff;
+  background-color: #f9f7f1;
   border: 1px solid #dddddd;
   border-radius: 4px;
   -webkit-transition: all 0.2s ease-in-out;
@@ -1188,10 +1188,14 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "News Cycle", "Arial Narrow Bold", sans-serif;
-  font-weight: 700;
+  font-family: "IM Fell DW Pica", "Arial Narrow Bold", sans-serif;
+  font-weight: 400;
   line-height: 1.1;
-  color: #000000;
+  color: #2f2f2f;
+}
+h1,
+.h1 {
+  font-weight: 700;
 }
 h1 small,
 h2 small,
@@ -1377,7 +1381,7 @@ a.text-danger:focus {
   color: #953b39;
 }
 .bg-primary {
-  color: #fff;
+  color: #2f2f2f;
   background-color: #eb6864;
 }
 a.bg-primary:hover,
@@ -4095,8 +4099,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   float: left;
 }
 .nav-pills > li > a {
-  border-radius: 4px;
 }
+  border-radius: 4px;
 .nav-pills > li + li {
   margin-left: 2px;
 }
@@ -5997,7 +6001,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Sorts Mill Goudy", Georgia, "Times New Roman", Times, serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -6115,7 +6119,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Sorts Mill Goudy", Georgia, "Times New Roman", Times, serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -6760,7 +6764,7 @@ button.close {
 }
 .navbar {
   font-size: 18px;
-  font-family: "News Cycle", "Arial Narrow Bold", sans-serif;
+  font-family: "IM Fell DW Pica", "Arial Narrow Bold", sans-serif;
   font-weight: 700;
 }
 .navbar-default .badge {
@@ -6838,9 +6842,8 @@ button.close {
 .jumbotron h4,
 .jumbotron h5,
 .jumbotron h6 {
-  font-family: "News Cycle", "Arial Narrow Bold", sans-serif;
-  font-weight: 700;
-  color: #000;
+  font-family: "IM Fell DW Pica", "Arial Narrow Bold", sans-serif;
+  font-weight: 400;
 }
 .panel-primary .panel-title,
 .panel-success .panel-title,
@@ -6848,4 +6851,9 @@ button.close {
 .panel-danger .panel-title,
 .panel-info .panel-title {
   color: #fff;
+}
+@media print {
+  h1,h2,h3,h4,h5,h6 { font-weight: 400; }
+  .character { page-break-inside: avoid; }
+  #the-setup { page-break-after: always; }
 }

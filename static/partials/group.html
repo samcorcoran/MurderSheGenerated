@@ -1,0 +1,5 @@
+<h4>{{group.name}} <small>{{group.members.length}} {{"member" | pluralize:group.members}}</small></h4>
+<ul ng-if="group.members">
+  <li ng-repeat="character in group.members | orderBy: 'id'">{{character | role}}</li>
+</ul>
+<p ng-if="!group.members.length">A now-defunct institution.</p>

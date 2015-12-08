@@ -1,7 +1,7 @@
 import random
 from enum import Enum
 
-import namegen
+from namegen import NameGenerator
 from graph import Vertex
 from relationships import RelationshipType
 
@@ -14,10 +14,10 @@ class Gender(Enum):
 
 class Character(Vertex):
     """ Actor/agent within the story """
-    def __init__(self, id, charGender = None):
+    def __init__(self, id, name, gender):
         super().__init__(id)
-        self.gender = charGender if charGender else gender.getRandomGender()
-        self.name = namegen.generateFirstName(self.gender)
+        self.gender = gender
+        self.name = name
         self.victim = False
         # Entity associations
         self.entities = dict()

@@ -1,5 +1,9 @@
-<h4>{{character.name}} <small>Player {{character.id}}</small></h4>
-<ul ng-if="character.relationships">
-  <li ng-repeat="relationship in character.relationships | orderBy: 'id' | orderBy: 'types'">{{relationship | phrasing}}</li>
-</ul>
-<p ng-if="!character.relationships.length">A stranger, never seen around town... until tonight.</p>
+<div class="character">
+  <h4>{{character.name}} <small>Player {{character.id}}</small></h4>
+  <ul ng-if="character.relationships">
+    <li ng-repeat="relationship in character.relationships | orderBy: 'id' | orderBy: 'types'">{{relationship | phrasing}}</li>
+  </ul>
+  <ul ng-if="!character.relationships.length">
+    <li>A stranger, never seen around town... until tonight.</li>
+  </ul>
+</div>
