@@ -52,15 +52,3 @@ murderDirectives.directive('cast', function() {
     controller: controller
   };
 });
-
-murderDirectives.directive('permalink', function() {
-
-  var controller = ['$scope', function($scope) {
-    }];
-
-  return {
-    restrict: 'A',
-    templateUrl: 'partials/permalink.html',
-    controller: controller
-  };
-});

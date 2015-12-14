@@ -27,7 +27,6 @@ var quoteCtrl = murderApp.controller('QuoteCtrl', ['$scope', function($scope) {
 
 var mysteryCtrl = murderApp.controller('MysteryCtrl', ['$scope', '$location', 'Mystery', function($scope, $location, Mystery) {
   $scope.title = "";
-  $scope.secret = false;
 
   function load() {
     var num_players =  $location.search().players || 8;

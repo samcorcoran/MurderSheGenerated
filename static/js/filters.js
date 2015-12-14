@@ -4,7 +4,6 @@
 
 var murderFilters = angular.module('murderFilters', []);
 
-
 murderFilters.filter('description', function() {
   return function(input) {
     if(typeof input === "undefined") return "";
