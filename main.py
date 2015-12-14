@@ -10,11 +10,11 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
 
     # Add characters
     if num_players is not None:
-        chars = [Gender.getRandomGender() for x in range(num_players + 1)]
+        chars = [Gender.getRandomGender() for x in range(num_players)]
     elif num_male is not None and num_female is not None:
         chars = [Gender.male for x in range(num_male)] + [Gender.female for x in range(num_female)] + [Gender.getRandomGender()]
     else:
-        chars = [Gender.getRandomGender() for x in range(random.randint(5, 16))]
+        chars = [Gender.getRandomGender() for x in range(random.randint(5, 15))]
 
     [c.addCharacter(gender=gender) for gender in chars]
     totalCharacters = len(chars)

@@ -3,7 +3,7 @@ from flask import Flask
 from werkzeug.debug import get_current_traceback
 from main import generateMystery
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/players/male/<int:num_male>/female/<int:num_female>')
 def specific_mystery(num_male, num_female):
@@ -39,6 +39,10 @@ def random_mystery(num_players):
             ignore_system_exceptions=False)
         track.log()
         abort(500)
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run()

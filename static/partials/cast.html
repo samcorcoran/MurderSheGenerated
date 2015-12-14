@@ -1,18 +1,26 @@
 <div id="the-setup" class="row">
   <div id="the-death" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-    <h3>The victim</h3>
     <victim character="victim"></victim>
-    <h3>The murderer</h3>
-    <p>The murder was committed by {{murderer.name}} (Player {{murderer.id}}).</p>
+    <div class="hidden-print">
+      <h3>The suspects</h3>
+      <ol>
+        <li ng-repeat="suspect in suspects">{{suspect.name}}</li>
+      </ol>
+    </div>
   </div>
   <div id="the-village" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-    <h3>The {{location}}</h3>
+    <h3>The {{location.name}}</h3>
+    <p>{{location.description}}</p>
     <group ng-repeat="group in groups" group="group"></group>
   </div>
 </div>
 <div class="row">
-  <h3 class="col-xs-12 hidden-print">The suspects</h3>
+  <div class="col-xs-12">
+    <hr>
+    <h3>For distribution to the relevant players, a confidential overview of each character</h3>
+    <hr>
+  </div>
   <div id="character-list" class="col-xs-12">
-    <suspect  ng-repeat="suspect in suspects | orderBy: 'id'" character="suspect"></suspect>
+    <suspect  ng-repeat="suspect in suspects | orderBy: 'id'" character="suspect" victim="victim"></suspect>
   </div>
 </div>

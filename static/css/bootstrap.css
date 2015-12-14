@@ -6856,11 +6856,14 @@ button.close {
   h1,h2,h3,h4,h5,h6 {
     font-weight: 400;
   }
+  strong {
+    font-weight: 700;
+  }
   .character {
     page-break-inside: avoid;
     border-bottom: 2px solid #fff;
   }
-  #the-details, #the-setup {
+  #the-details, #the-death, #the-village, #the-setup {
     page-break-after: always;
   }
 }
@@ -6874,7 +6877,7 @@ button.close {
     column-count: 2;
   }
 
-  .character {
+  .character, .instructions, .instructions #list, .instructions p, .instructions ol, .instructions h4 {
     -webkit-column-break-inside: avoid;
     -moz-column-break-inside: avoid;
     column-break-inside: avoid;

@@ -19,8 +19,10 @@ class Character(Vertex):
         self.gender = gender
         self.name = name
         self.victim = False
+
         # Entity associations
         self.entities = dict()
+
         # Characters with relationships with this character
         self.relationsByType = {
             RelationshipType.familial :list(),
@@ -29,6 +31,7 @@ class Character(Vertex):
             RelationshipType.romantic: list()
             }
         self.typesByRelation = dict()
+
         # Relationship objects involving
         self.relationships = {
             RelationshipType.familial: list(),

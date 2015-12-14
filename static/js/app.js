@@ -9,7 +9,6 @@ var murderApp = angular.module('murderApp', [
 ]);
 
 var quotes = [
-  ['“When you read the account of a murder - or, say, a fiction story based on murder - you usually begin with the murder itself. That\'s all wrong. The murder begins a long time beforehand. A murder is the culmination of a lot of different circumstances, all converging at a given moment at a given point. People are brought into it from different parts of the globe and for unforeseen reasons. The murder itself is the end of the story. It\'s Zero Hour.”', 'Agatha Christie'],
   ['“We\'ve all heard that a million monkeys banging on a million typewriters will eventually reproduce the entire works of Shakespeare. Now, thanks to the Internet, we know this is not true.”', 'Robert Wilensky'],
   ['“Ford!" he said, "there\'s an infinite number of monkeys outside who want to talk to us about this script for Hamlet they\'ve worked out.”', 'Douglas Adams'],
   ['“I like to write literature that reads like pulp fiction.”', 'Nike N. Chillemi'],
@@ -21,22 +20,32 @@ var quotes = [
   ['“A trillion chimpanzees typing for a trillion years still couldn’t create the garbage in the slush pile.”' ,'Unknown']
 ];
 
-var num_players = 8;
-
 var quoteCtrl = murderApp.controller('QuoteCtrl', ['$scope', function($scope) {
   var quote = quotes[Math.floor((Math.random() * quotes.length))];
   $scope.quote = {text: quote[0], source: quote[1]};
 }]);
 
-var mysteryCtrl = murderApp.controller('MysteryCtrl', ['$scope', 'Mystery', function($scope, Mystery) {
+var mysteryCtrl = murderApp.controller('MysteryCtrl', ['$scope', '$location', 'Mystery', function($scope, $location, Mystery) {
   $scope.title = "";
-  Mystery.query(num_players).then(function(mystery) {
-    $scope.cast = mystery.cast.characters;
-    $scope.groups = mystery.cast.groups;
-    $scope.murderer = mystery.cast.murderer;
-    $scope.title = mystery.title;
-    $scope.scene = mystery.scene;
-    $scope.location = mystery.location;
-    $scope.investigator = mystery.cast.investigator
+  $scope.secret = false;
+
+  function load() {
+    var num_players =  $location.search().players || 8;
+    Mystery.query(num_players).then(function(mystery) {
+      $scope.cast = mystery.cast.characters;
+      $scope.groups = mystery.cast.groups;
+      $scope.murderer = mystery.cast.murderer;
+      $scope.title = mystery.title;
+      $scope.scene = mystery.scene;
+      $scope.location = mystery.location;
+      $scope.investigator = mystery.cast.investigator
+      $scope.starter = mystery.cast.characters[0].relationships[Math.floor(Math.random() * mystery.cast.characters[0].relationships.length)];
+    });
+  };
+
+  $scope.$watch(function () {
+    return $location.hash
+  }, function (players) {
+    load();
   });
 }]);

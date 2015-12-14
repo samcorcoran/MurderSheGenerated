@@ -8,7 +8,8 @@ murderDirectives.directive('suspect', function() {
   return {
     restrict: 'E',
 		scope: {
-			character: "="
+			character: "=",
+			victim: "="
 		},
     templateUrl: 'partials/character.html'
   };

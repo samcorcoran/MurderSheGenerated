@@ -80,42 +80,51 @@ murderFilters.filter('role', function() {
 });
 
 murderFilters.filter('phrasing', function() {
-  return function(input) {
+  return function(input, pastTense, victim) {
+    if(typeof pastTense === "undefined") pastTense = false;
+
     var out = "";
     if(input.types.indexOf("romantic") >= 0 && input.types.indexOf("familial") >= 0) {
-      out += "Married to ";
+      out += (pastTense ? (typeof victim ==="undefined" ? "Was" : "were") : "are") + " married to ";
     }
     else if(input.types.indexOf("romantic") >= 0 && input.types.indexOf("professional") >= 0) {
-      out += "Apparently had an affair with a colleague, ";
+      out += (pastTense ? (typeof victim ==="undefined" ? "Had" : "were having") : "are having") + " an affair with a colleague, ";
     }
     else if(input.types.indexOf("romantic") >= 0 && input.types.indexOf("social") >= 0) {
-      out += "Both friend and lover of ";
+      out += (pastTense ? (typeof victim ==="undefined" ? "Was" : "were" ) : "are") + " both a friend and lover of ";
     }
     else if(input.types.indexOf("social") >= 0 && input.types.indexOf("professional") >= 0) {
-      out += "Often goes drinking with a colleague, ";
+      out += (pastTense ? "Often went" : "often go") + " drinking with a colleague, ";
     }
     else if(input.types.indexOf("social") >= 0 && input.types.indexOf("familial") >= 0) {
-      out += "Shares hobbies with a family member, ";
+      out += (pastTense ? "Shared" : "share") + " hobbies with a family member, ";
     }
     else if(input.types.indexOf("familial") >= 0 && input.types.indexOf("professional") >= 0) {
-      out += "Known to work with a family member, ";
+      out += (pastTense ? "Worked" : "work") + " with a family member, ";
     }
     else if(input.types.indexOf("romantic") >= 0) {
-      out += "Romantically entwined with "
+      out += (pastTense ? (typeof victim ==="undefined" ? "Was" : "were" ) : "are") + " romantically entwined with "
     }
     else if(input.types.indexOf("familial") >= 0) {
-      out += "Has family ties with ";
+        out += (pastTense ? "Had" : "have") + " family ties with ";
     }
     else if(input.types.indexOf("social") >= 0) {
-      out += "Often seen socially with "
+      out += (pastTense ? (typeof victim ==="undefined" ? "Was" : "were") : "are") + " often seen socially with "
     }
     else if(input.types.indexOf("professional") >= 0) {
-      out += "Said to work closely with "
+      out += (pastTense ? (typeof victim ==="undefined" ? "Was" : "were") : "are") + " said to work closely with "
     }
-    if(input.character.id == 0) {
-      out += " the recently deceased " + input.character.name + "."
-    } else {
-      out += input.character.name  + " (Player " + (input.character.id) + ")"
+    if(typeof victim !== "undefined") {
+      out += " the recently deceased " + victim.name;
+      out = out.slice(0,1).toLowerCase() + out.slice(1);
+    }
+    else {
+      if(input.character.id == 0) {
+        out += " the recently deceased " + input.character.name
+      }
+      else {
+        out += input.character.name  + " (Player " + (input.character.id) + ")"
+      }
     }
     return out;
   };
