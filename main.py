@@ -1,3 +1,4 @@
+import json
 import random
 
 from cast import Cast, ConnectionStrategy
@@ -69,4 +70,12 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     return (c, title, location, scene)
 
 if __name__ == '__main__':
-    generateMystery();
+    cast, title, location, scene = generateMystery()
+    print(
+        json.dumps({
+            "cast": cast.toDict(),
+            "title": title,
+            "location": location,
+            "scene": scene
+            })
+        )
