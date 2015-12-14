@@ -1,9 +1,0 @@
-<div class="character">
-  <h4>{{character.name}} <small>Player {{character.id}}</small></h4>
-  <ul>
-    <li ng-repeat="relationship in character.relationships | orderBy: 'id' | orderBy: 'types'">You {{relationship | phrasing}}.</li>
-    <li ng-if="character.murderer == true">You murdered {{victim.name}}.</li>
-    <li ng-if="!character.relationships.length">You are a stranger, never seen around town... until tonight.</li>
-  </ul>
-  <hr class="divider">
-</div>

@@ -1,6 +1,0 @@
-<h3>The victim, {{character.name}} <small>R.I.P.</small></h3>
-<p>{{character | description}}</p>
-<p></p>
-<ul ng-if="character.relationships">
-  <li ng-repeat="relationship in character.relationships | orderBy: 'id' | orderBy: 'types'">{{relationship | phrasing:true}}</li>
-</ul>
