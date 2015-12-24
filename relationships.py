@@ -1,20 +1,23 @@
-
 from enum import Enum
 import random
-from pprint import pprint
 
-import namegen
+from namegen import NameGenerator
 
-class relType(Enum):
+class RelationshipType(Enum):
     familial = "familial"
     romantic = "romantic"
     professional = "professional"
     social = "social"
 
-    def getRandomRelType():
-        return random.choice([relType.familial, relType.romantic, relType.professional, relType.social])
+    def getRandomRelationshipType():
+        return random.choice([
+          RelationshipType.familial,
+          RelationshipType.romantic,
+          RelationshipType.professional,
+          RelationshipType.social
+          ])
 
-class relationship():
+class Relationship:
     """ Manner in which two characters are connected. An edge between vertices. """
     def __init__(self, charA, charB, relType):
         self.members = (charA, charB)
@@ -23,41 +26,39 @@ class relationship():
         self.publicKnowledge = True
 
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
-entities = dict()
 
-def addEntity(entity):
-    if not entity.type in entities:
-        entities[entity.type] = list()
-    entities[entity.type].append(entity)
-
-def totalTypedEntities(relationshipType):
-    if not relationshipType in entities:
-        entities[relationshipType] = list()
-    return len(entities[relationshipType])
-
-class entity():
-    def __init__(self, relationshipType = None):
+class Entity:
+    def __init__(self, id, name, relationshipType = None):
+        self.name = name
         self.type = relationshipType
-        self.id = totalTypedEntities(self.type)
-        addEntity(self)
         self.members = list()
 
     def addMember(self, newMember):
         self.members.append(newMember)
 
-class family(entity):
-    def __init__(self):
-        entity.__init__(self, relType.familial)
-        self.surname = namegen.generateSurname()
+class Family(Entity):
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.familial)
 
-class company(entity):
-    def __init__(self):
-        entity.__init__(self, relType.professional)
-        self.companyName = namegen.generateCompanyName()
+    def getLocation(self):
+        return "%s residence" % self.name
 
-class socialGroup(entity):
-    def __init__(self):
-        entity.__init__(self, relType.social)
-        self.socialGroupName = namegen.generateSocialClubName();
+class Company(Entity):
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.professional)
 
-createEntity = {relType.familial: family, relType.professional: company, relType.social: socialGroup}
+    def getLocation(self):
+        return "%s head offices" % self.name
+
+class SocialGroup(Entity):
+    def __init__(self, id, name):
+        super().__init__(id, name, RelationshipType.social)
+
+    def getLocation(self):
+        return "%s clubhouse" % self.name
+
+entities = {
+    RelationshipType.familial: Family,
+    RelationshipType.professional: Company,
+    RelationshipType.social: SocialGroup
+    }
