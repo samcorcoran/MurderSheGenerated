@@ -228,16 +228,24 @@ class Cast():
 
     def createTypedEntities(self, relationshipType, maxMembers, strategy = "bfs"):
         """ Finds characters missing typed entity and creates one """
-        for charA in self.characters:
-            if not relationshipType in charA.entities and charA.relationsByType[relationshipType]:
-                # Has relations but no associated entity
-                newEntity = entities[relationshipType](len(self.entities), self.namegen.generateName(relationshipType.name))
+        # Aggregate relationships of given type
+        matchingRelationships = list()
+        for character in self.characters:
+             matchingRelationships.extend(character.relationships[relationshipType])
+        # Randomise order to avoid bias in initiators of BF (or otherwise) searches
+        random.shuffle(matchingRelationships)
+        # Ensure all relationships have an entity
+        for nextRelationship in matchingRelationships:
+            if not nextRelationship.associatedEntity:
+                newEntity = entities[relationshipType](len(self.entities),
+                                                       self.namegen.generateName(relationshipType.name))
                 self.addEntity(newEntity)
+                nextRelationship.associatedEntity = newEntity
                 members = list()
                 if strategy == "bfs":
-                    members = self.gatherConnectedRelTypeMembersBreadthFirst(charA, relationshipType, maxMembers)
+                    members = self.gatherConnectedRelTypeMembersBreadthFirst(random.choice(nextRelationship.members), relationshipType, maxMembers)
                 elif strategy == "dfs":
-                    members = self.gatherConnectedRelTypeMembersDepthFirst(charA, relationshipType, members, maxMembers)
+                    members = self.gatherConnectedRelTypeMembersDepthFirst(random.choice(nextRelationship.members), relationshipType, members, maxMembers)
                 for member in members:
                     member.joinEntity(newEntity)
 

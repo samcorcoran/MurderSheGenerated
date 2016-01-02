@@ -29,6 +29,7 @@ class Relationship:
         self.members = (charA, charB)
         self.type = relType
         self.roles = None
+        self.associatedEntity = None
         self.publicKnowledge = True
         self.whoKnows = list()
         self.whoSuspects = list()
