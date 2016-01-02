@@ -100,7 +100,7 @@ class Cast():
         # Don't add relationship if already related
         if charB in charA.relationsByType[rel.type]:
             print("WARNING: Attempted to create duplicate relationship ",
-                "(%s) between %s and %s" % (rel.type.name, charA.name, charB.name))
+                "({0}) between {1} and {2}".format(rel.type.name, charA.name, charB.name))
             return False
         # Store relationship object keyed by relationship type
         self.relationships[rel.type].append(rel)
@@ -309,7 +309,7 @@ class Cast():
         groups = [self.entities[etype] for etype in types]
         investigator_title = random.choice(self.namegen.investigatorTitles)
         investigator_surname = random.choice(self.namegen.surnames)
-        self.investigator = "%s %s" % (investigator_title, investigator_surname)
+        self.investigator = "{0} {1}".format(investigator_title, investigator_surname)
         return self.namegen.generateScene(
             location,
             victim,
@@ -319,7 +319,7 @@ class Cast():
             )
 
     def generateTitle(self):
-        return "The %s of %s" % (
+        return "The {0} of {1}".format(
             self.namegen.generateTitle(),
             self.characters[0].getFullName()
         )

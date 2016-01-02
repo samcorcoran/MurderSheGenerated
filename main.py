@@ -24,8 +24,8 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     numFamilies = (int(totalCharacters/6), int(totalCharacters/3))
     numFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
     if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
-        print("WARNING: May have too few characters for max possible families and members");
-    print("Family parameters: number %d, size %d" % numFamilies, numFamilyMembers);
+        print("WARNING: May have too few characters for max possible families and members")
+    print("Family parameters: number {0}, size {1}".format(numFamilies, numFamilyMembers))
 
     # GENERATE ROMANTIC RELATIONSHIP NETWORK
     numRomances = int(0.5 * totalCharacters)
@@ -35,14 +35,14 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     numEmployees = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
     if (numEmployers[1] * numEmployees[1] > totalCharacters):
         print("WARNING: May have too few characters for max possible professional relationships")
-    print("Professional parameters: number %d, size %d" % numEmployers, numEmployees)
+    print("Professional parameters: number {0}, size {1}".format(numEmployers, numEmployees))
 
     # GENERATE SOCIAL RELATIONSHIP NETWORK
     numSocialGroups = (int(totalCharacters/6), int(totalCharacters/3))
     numSocialites = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
     if (numSocialGroups[1] * numSocialites[1] > totalCharacters):
         print("WARNING: May have too few characters for max possible social relationships")
-    print("Social parameters: number %d, size %d" % numSocialGroups, numSocialites)
+    print("Social parameters: number {0}, size {1}".format(numSocialGroups, numSocialites))
 
     # Create typed relationships between characters
     c.generateRelationshipGroupings(RelationshipType.familial, 1, numFamilies, numFamilyMembers, ConnectionStrategy.totallyConnect)
