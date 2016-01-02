@@ -14,15 +14,31 @@ class RelationshipType(Enum):
             [member for name, member in RelationshipType.__members__.items()]
                             )
 
+class FamilialRoles(Enum):
+    sibling = "sibling"
+    parent = "parent"
+    child = "child"
+    spouse = "spouse"
+
+    def getAllRoles(self):
+        return [member for name, member in FamilialRoles.__members__.items()]
+
 class Relationship:
     """ Manner in which two characters are connected. An edge between vertices. """
     def __init__(self, charA, charB, relType):
         self.members = (charA, charB)
         self.type = relType
-        self.roles = list()
+        self.roles = None
         self.publicKnowledge = True
         self.whoKnows = list()
         self.whoSuspects = list()
+        self.specifyRoles()
+
+    def specifyRoles(self):
+        if RelationshipType.familial:
+            self.roles = random.choice([(FamilialRoles.sibling, FamilialRoles.sibling),
+                                        (FamilialRoles.parent, FamilialRoles.child),
+                                        (FamilialRoles.spouse, FamilialRoles.spouse)])
 
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
 
