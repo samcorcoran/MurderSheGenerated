@@ -9,13 +9,10 @@ class RelationshipType(Enum):
     professional = "professional"
     social = "social"
 
-    def getRandomRelationshipType():
-        return random.choice([
-          RelationshipType.familial,
-          RelationshipType.romantic,
-          RelationshipType.professional,
-          RelationshipType.social
-          ])
+    def getRandomRelType(self):
+        return random.choice(
+            [member for name, member in RelationshipType.__members__.items()]
+                            )
 
 class Relationship:
     """ Manner in which two characters are connected. An edge between vertices. """
