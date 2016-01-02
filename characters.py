@@ -41,11 +41,8 @@ class Character(Vertex):
             }
 
     def joinEntity(self, newEntity):
-        if newEntity.type in self.entities:
-            print("ERROR: Character already member of a %s entity." % str(newEntity.type))
-        else:
-            self.entities[newEntity.type] = newEntity
-            newEntity.addMember(self)
+        self.entities[newEntity.type] = newEntity
+        newEntity.addMember(self)
 
     def getFullName(self):
         fullName = str(self.name)
