@@ -21,8 +21,8 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     totalCharacters = len(chars)
 
     # GENERATE FAMILIAL RELATIONSHIP NETWORK
-    numFamilies = (int(totalCharacters/6), int(totalCharacters/3))
-    numFamilyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
+    numFamilies = [int(totalCharacters/6), int(totalCharacters/3)]
+    numFamilyMembers = [max(2, int(totalCharacters/6)), int(totalCharacters/3)]
     if (numFamilies[1] * numFamilyMembers[1] > totalCharacters):
         print("WARNING: May have too few characters for max possible families and members")
     print("Family parameters: number {0}, size {1}".format(numFamilies, numFamilyMembers))
@@ -31,15 +31,15 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     numRomances = int(0.5 * totalCharacters)
 
     # GENERATE PROFESSIONAL RELATIONSHIP NETWORK
-    numEmployers = (int(totalCharacters/6), int(totalCharacters/3))
-    numEmployees = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
+    numEmployers = [int(totalCharacters/6), int(totalCharacters/3)]
+    numEmployees = [max(2, int(totalCharacters/6)), int(totalCharacters/3)]
     if (numEmployers[1] * numEmployees[1] > totalCharacters):
         print("WARNING: May have too few characters for max possible professional relationships")
     print("Professional parameters: number {0}, size {1}".format(numEmployers, numEmployees))
 
     # GENERATE SOCIAL RELATIONSHIP NETWORK
-    numSocialGroups = (int(totalCharacters/6), int(totalCharacters/3))
-    numSocialites = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
+    numSocialGroups = [int(totalCharacters/6), int(totalCharacters/3)]
+    numSocialites = [max(2, int(totalCharacters/6)), int(totalCharacters/3)]
     if (numSocialGroups[1] * numSocialites[1] > totalCharacters):
         print("WARNING: May have too few characters for max possible social relationships")
     print("Social parameters: number {0}, size {1}".format(numSocialGroups, numSocialites))
@@ -56,9 +56,9 @@ def generateMystery(num_players = None, num_male = None, num_female = None):
     # If familial relations must all belong t same family, then -1 should be used, for infinite depth
     c.createTypedEntities(RelationshipType.familial, -1, strategy="bfs")
     maxCompanyMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
-    c.createTypedEntities(RelationshipType.professional, random.randint(min(*maxCompanyMembers), maxCompanyMembers[1]), strategy="bfs")
+    c.createTypedEntities(RelationshipType.professional, random.randint(*sorted(maxCompanyMembers)), strategy="bfs")
     maxSocialGroupMembers = (max(2, int(totalCharacters/6)), int(totalCharacters/3))
-    c.createTypedEntities(RelationshipType.social, random.randint(min(*maxSocialGroupMembers), maxSocialGroupMembers[1]), strategy="bfs")
+    c.createTypedEntities(RelationshipType.social, random.randint(*sorted(maxSocialGroupMembers)), strategy="bfs")
 
     # Fill in remaining details
     c.createIsolatedTypedEntities(RelationshipType.familial)

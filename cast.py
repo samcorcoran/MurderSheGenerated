@@ -166,7 +166,7 @@ class Cast():
     def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
                                       groupSizeMinMax, connectionStrategy):
         """ Gathers candidates and forms groups connected by typed relationships """
-        numGroups = random.randint(min(*numGroupsMinMax), numGroupsMinMax[1])
+        numGroups = random.randint(*sorted(numGroupsMinMax))
         print("Num [" + relationshipType.name + "] groups: " + str(numGroups))
         for groupNum in range(numGroups):
             candidates = self.gatherCandidates(relationshipType, numAllowed)
@@ -174,7 +174,7 @@ class Cast():
                 return
             # Create a new group
             groupMembers = list()
-            groupSize = random.randint(min(*groupSizeMinMax), groupSizeMinMax[1])
+            groupSize = random.randint(*sorted(groupSizeMinMax))
             for memberNum in range(groupSize):
                 # Select new member
                 if not candidates:
