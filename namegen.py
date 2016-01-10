@@ -1,7 +1,9 @@
 import random
 
 def popRandom(array):
-    return array.pop(random.randint(0, len(array) - 1))
+    if array:
+        return array.pop(random.randint(0, len(array) - 1))
+    return "NAMEGEN ERROR"
 
 class NameGenerator:
     def __init__(self):
