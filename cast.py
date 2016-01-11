@@ -79,6 +79,9 @@ class Cast():
     def getAllRelationships(self):
         return [item for sublist in self.relationships.values() for item in sublist]
 
+    def getAllEntities(self):
+        return [item for sublist in self.entities.values() for item in sublist]
+
     def addCharacter(self, name = None, gender = None):
         if gender == None:
             gender = Gender.getRandomGender()
@@ -122,6 +125,9 @@ class Cast():
 
     def getTotalRelationships(self):
         return len(self.getAllRelationships())
+
+    def getTotalEntities(self):
+        return len(self.getAllEntities())
 
     def storeRelationshipByParticipants(self, charA, charB, rel):
         """ Store relationship object keyed on participants (in both orderings) """
