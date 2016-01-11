@@ -25,7 +25,8 @@ class FamilialRoles(Enum):
 
 class Relationship:
     """ Manner in which two characters are connected. An edge between vertices. """
-    def __init__(self, charA, charB, relType):
+    def __init__(self, id, charA, charB, relType):
+        self.id = id
         self.members = (charA, charB)
         self.type = relType
         self.roles = None

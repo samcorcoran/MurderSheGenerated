@@ -96,7 +96,7 @@ class Cast():
             )
         # Create relationship object (does not affect state - not binding relationship
         # until stored somewhere)
-        rel = Relationship(charA, charB, relType)
+        rel = Relationship(self.getTotalRelationships(), charA, charB, relType)
         # Don't add relationship if already related
         if charB in charA.relationsByType[rel.type]:
             print("WARNING: Attempted to create duplicate relationship ",
