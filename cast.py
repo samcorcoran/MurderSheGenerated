@@ -323,3 +323,14 @@ class Cast():
             self.namegen.generateTitle(),
             self.characters[0].getFullName()
         )
+
+    def printDiagnostic(self):
+        print("--- CAST DIAGNOSTICS ---")
+        print("Character diagnostics (total: {0})".format(len(self.characters)))
+        for charA in self.characters:
+            charA.printDiagnostic()
+        print("Relationship diagnostics (total: {0})".format(len(self.relationships)))
+        for nextEntityType in self.relationships:
+            for rel in self.relationships[nextEntityType]:
+                rel.printDiagnostic()
+
