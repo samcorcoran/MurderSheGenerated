@@ -42,6 +42,14 @@ class Relationship:
                                         (FamilialRoles.parent, FamilialRoles.child),
                                         (FamilialRoles.spouse, FamilialRoles.spouse)])
 
+    def getOtherParticipant(self, charA):
+        if self.members[0] == charA:
+            return self.members[1]
+        elif self.members[1] == charA:
+            return self.members[0]
+        else:
+            return False
+
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
 
 class Entity:
