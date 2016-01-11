@@ -54,6 +54,7 @@ class Relationship:
 
 class Entity:
     def __init__(self, id, name, relationshipType = None):
+        self.id = id
         self.name = name
         self.type = relationshipType
         self.members = list()
