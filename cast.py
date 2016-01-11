@@ -166,7 +166,7 @@ class Cast():
         """ Create single-member non-plot families """
         candidates = self.gatherCandidates(RelationshipType.familial, 1)
         for charA in candidates:
-            charA.family = Family(len(self.entities), self.namegen.generateSurname())
+            charA.family = Family(self.getTotalEntities(), self.namegen.generateSurname())
             self.addEntity(charA.family)
 
     def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
@@ -243,7 +243,8 @@ class Cast():
         # Ensure all relationships have an entity
         for nextRelationship in matchingRelationships:
             if not nextRelationship.associatedEntity:
-                newEntity = entities[relationshipType](len(self.entities),
+                # Create new entity
+                newEntity = entities[relationshipType](self.getTotalEntities(),
                                                        self.namegen.generateName(relationshipType.name))
                 self.addEntity(newEntity)
                 nextRelationship.associatedEntity = newEntity
@@ -259,7 +260,7 @@ class Cast():
         for charA in self.characters:
             # Find characters who don't already have a typed entity
             if not relationshipType in charA.entities.keys():
-                newEntity = entities[relationshipType](len(self.entities), self.namegen.generateName(relationshipType.name))
+                newEntity = entities[relationshipType](self.getTotalEntities(), self.namegen.generateName(relationshipType.name))
                 self.addEntity(newEntity)
                 charA.joinEntity(newEntity)
 
