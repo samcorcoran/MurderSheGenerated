@@ -69,7 +69,7 @@ class Entity:
         self.members.append(newMember)
 
     def printDiagnostic(self):
-        print("Entity {0}: {1} ({2})".format(self.id, self.name, [x.name for x in self.members]))
+        print("\t\tEntity {0}: {1} ({2})".format(self.id, self.name, [x.name for x in self.members]))
 
 class Family(Entity):
     def __init__(self, id, name):
