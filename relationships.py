@@ -51,7 +51,10 @@ class Relationship:
             return False
 
     def printDiagnostic(self):
-        print("{0} relationship (total: {1})".format(self.type, len(self.members)))
+        entityName = "NONE"
+        if self.associatedEntity:
+            entityName = self.associatedEntity.name
+        print("\t\tRel {0}, Members ({1}): {2}, Entity: {3}".format(self.id, len(self.members), [x.name for x in self.members], entityName))
 
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
 

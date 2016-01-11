@@ -331,6 +331,7 @@ class Cast():
             charA.printDiagnostic()
         print("Relationship diagnostics (total: {0})".format(len(self.relationships)))
         for nextEntityType in self.relationships:
+            print("\t{0} relationships (total: {1})".format(nextEntityType.name, len(self.relationships[nextEntityType])))
             for rel in self.relationships[nextEntityType]:
                 rel.printDiagnostic()
 
