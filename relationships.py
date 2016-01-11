@@ -50,6 +50,9 @@ class Relationship:
         else:
             return False
 
+    def printDiagnostic(self):
+        print("{0} relationship (total: {1})".format(self.type, len(self.members)))
+
 # Entities characters are members of (e.g. companies, clubs, families) keyed on associated relationship type
 
 class Entity:
@@ -61,6 +64,10 @@ class Entity:
 
     def addMember(self, newMember):
         self.members.append(newMember)
+
+    def printDiagnostic(self):
+        print("Entity: name: {0}, type: {1}")
+        print(self.members)
 
 class Family(Entity):
     def __init__(self, id, name):
