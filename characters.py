@@ -61,3 +61,35 @@ class Character(Vertex):
             self.typesByRelation[charB] = list()
         self.typesByRelation[charB].append(rel)
         return True
+
+    def printDiagnostic(self, printRelationships = True):
+        print("Char {0}: {1})".format(self.id, self.getFullName()))
+        print("\t{0}, Victim: {1}".format(self.gender, self.victim))
+        # Optional detail regarding relationships
+        if printRelationships:
+            print("\tRelations:")
+            # E.g. romantic (1): [(1, 'Landon')]
+            for nextRelationshipType in self.relationsByType:
+                relations = self.relationsByType[nextRelationshipType]
+                if relations:
+                    print("\t\t{0} ({1}): {2}".format(nextRelationshipType.name,
+                                                             len(relations),
+                                                             [(x.id, x.name) for x in relations]))
+            print("\tRelationships:")
+            # E.g. familial (2): [(10, 'Henrietta'), (3, 'Prudence')]
+            for nextRelationshipType in self.relationships:
+                rels = self.relationships[nextRelationshipType]
+                tuples = []
+                # Tuple formed of (relId, relation name, entity name)
+                for r in rels:
+                    entityName = "NONE"
+                    if r.associatedEntity:
+                        entityName = r.associatedEntity.name
+                    tuples.append((r.id,
+                                  r.getOtherParticipant(self).name,
+                                  entityName))
+                if rels:
+                    print("\t\t{0} ({1}): {2}".format(nextRelationshipType.name,
+                                                  len(rels),
+                                                  tuples))
+
