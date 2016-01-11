@@ -335,9 +335,14 @@ class Cast():
         print("Character diagnostics (total: {0})".format(len(self.characters)))
         for charA in self.characters:
             charA.printDiagnostic()
-        print("Relationship diagnostics (total: {0})".format(len(self.relationships)))
-        for nextEntityType in self.relationships:
-            print("\t{0} relationships (total: {1})".format(nextEntityType.name, len(self.relationships[nextEntityType])))
-            for rel in self.relationships[nextEntityType]:
+        print("Relationship diagnostics (total: {0})".format(self.getTotalRelationships()))
+        for nextRelationshipType in self.relationships:
+            print("\t{0} relationships (total: {1})".format(nextRelationshipType.name, len(self.relationships[nextRelationshipType])))
+            for rel in self.relationships[nextRelationshipType]:
                 rel.printDiagnostic()
+        print("Entity diagnostics (total: {0})".format(self.getTotalEntities()))
+        for nextEntityType in self.entities:
+            print("\t{0} entities (total: {1})".format(nextEntityType.name, len(self.entities[nextEntityType])))
+            for nextEntity in self.entities[nextEntityType]:
+                nextEntity.printDiagnostic()
 
