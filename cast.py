@@ -162,13 +162,6 @@ class Cast():
                 charB = random.choice(self.edges[charA])[0]
         self.removeReciprocalRelationship(charA, charB)
 
-    def generateNonPlotFamilies(self):
-        """ Create single-member non-plot families """
-        candidates = self.gatherCandidates(RelationshipType.familial, 1)
-        for charA in candidates:
-            charA.family = Family(self.getTotalEntities(), self.namegen.generateSurname())
-            self.addEntity(charA.family)
-
     def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
                                       groupSizeMinMax, connectionStrategy):
         """ Gathers candidates and forms groups connected by typed relationships """
