@@ -162,13 +162,13 @@ class Cast():
                 charB = random.choice(self.edges[charA])[0]
         self.removeReciprocalRelationship(charA, charB)
 
-    def generateRelationshipGroupings(self, relationshipType, numAllowed, numGroupsMinMax,
+    def generateRelationshipGroupings(self, relationshipType, maxAllowed, numGroupsMinMax,
                                       groupSizeMinMax, connectionStrategy):
         """ Gathers candidates and forms groups connected by typed relationships """
         numGroups = random.randint(*sorted(numGroupsMinMax))
         print("Num [" + relationshipType.name + "] groups: " + str(numGroups))
         for groupNum in range(numGroups):
-            candidates = self.gatherCandidates(relationshipType, numAllowed)
+            candidates = self.gatherCandidates(relationshipType, maxAllowed)
             if not candidates:
                 return
             # Create a new group
