@@ -93,3 +93,14 @@ class Character(Vertex):
                                                   len(rels),
                                                   tuples))
 
+    def getAllRelations(self):
+        return [item for sublist in self.relationsByType.values() for item in sublist]
+
+    def getTotalRelations(self):
+        return len(self.getAllRelations())
+
+    def getAllRelationships(self):
+        return [item for sublist in self.relationships.values() for item in sublist]
+
+    def getTotalRelationships(self):
+        return len(self.getAllRelationships())
