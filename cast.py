@@ -305,7 +305,7 @@ class Cast():
 
     def generateScene(self, location):
         victim = self.characters[0]
-        types = [etype for etype in self.entities.keys() if etype.name != "familial"]
+        types = [etype for etype in self.entities.keys() if etype.name != "familial" and etype.name != "romantic"]
         groups = [self.entities[etype] for etype in types]
         investigator_title = random.choice(self.namegen.investigatorTitles)
         investigator_surname = random.choice(self.namegen.surnames)
