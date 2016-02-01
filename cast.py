@@ -230,7 +230,11 @@ class Cast():
         # Aggregate relationships of given type
         matchingRelationships = list()
         for character in self.characters:
-             matchingRelationships.extend(character.relationships[relationshipType])
+            # Every relationship is included only once
+            charRel = character.relationships[relationshipType]
+            if charRel in matchingRelationships:
+                continue
+            matchingRelationships.extend(charRel)
         # Randomise order to avoid bias in initiators of BF (or otherwise) searches
         random.shuffle(matchingRelationships)
         # Ensure all relationships have an entity
