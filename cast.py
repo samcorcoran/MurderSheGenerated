@@ -225,8 +225,15 @@ class Cast():
         random.shuffle(candidates)
         return candidates
 
-    def createTypedEntities(self, relationshipType, maxMembers, strategy = "bfs"):
-        """ Finds characters missing typed entity and creates one """
+    def createEntity(self, relationshipType):
+        newEntity = entities[relationshipType](self.getTotalEntities(),
+                                               self.namegen.generateName(relationshipType.name))
+        # Immediately register new entity with cast object
+        self.addEntity(newEntity)
+        return newEntity
+
+    def createTypedEntitiesForRelationships(self, relationshipType, maxMembers, strategy = "bfs"):
+        """ Finds characters with relationships missing typed entity and creates one """
         # Aggregate relationships of given type
         matchingRelationships = list()
         for character in self.characters:
@@ -240,10 +247,10 @@ class Cast():
         # Ensure all relationships have an entity
         for nextRelationship in matchingRelationships:
             if not nextRelationship.associatedEntity:
-                # Create new entity
-                newEntity = entities[relationshipType](self.getTotalEntities(),
-                                                       self.namegen.generateName(relationshipType.name))
-                self.addEntity(newEntity)
+                # This relationship does not have an entity associated so one will be created and associated with
+                # the two characters in this relationship. Then using the desired search rules, other characters
+                # connected by relationships will also be made associated with the Entity through their relationships
+                newEntity = self.createEntity(relationshipType)
                 nextRelationship.associatedEntity = newEntity
                 members = list()
                 if strategy == "bfs":
