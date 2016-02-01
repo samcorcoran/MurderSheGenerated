@@ -251,14 +251,18 @@ class Cast():
                 # the two characters in this relationship. Then using the desired search rules, other characters
                 # connected by relationships will also be made associated with the Entity through their relationships
                 newEntity = self.createEntity(relationshipType)
+                # Associate entity with the relationship it was created for
                 nextRelationship.associatedEntity = newEntity
                 members = list()
+                rels = list()
                 if strategy == "bfs":
-                    members = self.gatherConnectedRelTypeMembersBreadthFirst(random.choice(nextRelationship.members), relationshipType, maxMembers)
+                    members, rels = self.gatherConnectedRelTypeMembersBreadthFirst(random.choice(nextRelationship.members), relationshipType, maxMembers)
                 elif strategy == "dfs":
                     members = self.gatherConnectedRelTypeMembersDepthFirst(random.choice(nextRelationship.members), relationshipType, members, maxMembers)
                 for member in members:
                     member.joinEntity(newEntity)
+                for rel in rels:
+                    rel.associatedEntity = newEntity
 
     def createIsolatedTypedEntities(self, relationshipType):
         for charA in self.characters:
@@ -277,19 +281,34 @@ class Cast():
                 self.gatherConnectedRelTypeMembersDepthFirst(charB, desiredType, members)
         return members
 
-    def gatherConnectedRelTypeMembersBreadthFirst(self, charA, desiredType, maxMembers=-1):
-        """ Creates breadth-first expanding set of typed relations to charA and returns  """
+    def gatherConnectedRelTypeMembersBreadthFirst(self, charA, desiredType, maxMembers=-1, totallyConnect=True):
+        """ Creates breadth-first expanding set of typed relations to charA and returns characters and relationships """
         leaves = [charA]
-        for leaf in leaves:
-            for leafRelation in leaf.relationsByType[desiredType]:
+        relationships = list()
+        for leafCharacter in leaves:
+            edges = leafCharacter.relationships[desiredType]
+            for nextRelationship in edges:
+                # Get the other participant of the relationship with leafCharacter
+                leafRelation = nextRelationship.getOtherParticipant(leafCharacter)
                 # Character accepted if not already accepted and doesn't already have typed entity
-                if leafRelation not in leaves and not desiredType in leafRelation.entities:
+                if leafRelation not in leaves:
                     leaves.append(leafRelation)
+                    relationships.append(nextRelationship)
+                    if totallyConnect:
+                        # Check if new member has any other relationships of this type with existing members which must
+                        # be added to achieve total connectivity for these characters
+                        for existingMember in leaves:
+                            for possibleInternalConnection in existingMember.relationships[desiredType]:
+                                if possibleInternalConnection.getOtherParticipant(existingMember) != leafRelation:
+                                    continue
+                                if possibleInternalConnection in relationships:
+                                    continue
+                                relationships.append(possibleInternalConnection)
                     if (0 <= maxMembers <= len(leaves)):
                         # Return early if maximum is reached
-                        return leaves
+                        return leaves, relationships
         # Return full set if no maximum was set
-        return leaves
+        return leaves, relationships
 
     def mostCommonConnection(self, L):
         groups = itertools.groupby(sorted(L))
