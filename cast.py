@@ -287,6 +287,11 @@ class Cast():
         relationships = list()
         for leafCharacter in leaves:
             edges = leafCharacter.relationships[desiredType]
+            ##Debug:
+            ##print("Next leaf is '{0}' with {1} {2} relationships ({3})".format(leafCharacter.name,
+            ##                                                            len(edges),
+            ##                                                           desiredType.name,
+            ##                                                            [x.getOtherParticipant(leafCharacter).name for x in edges]))
             for nextRelationship in edges:
                 # Get the other participant of the relationship with leafCharacter
                 leafRelation = nextRelationship.getOtherParticipant(leafCharacter)
@@ -307,6 +312,8 @@ class Cast():
                     if (0 <= maxMembers <= len(leaves)):
                         # Return early if maximum is reached
                         return leaves, relationships
+        ## Debug:
+        ##print("Gathered {0} characters and {1} relationships in BFS".format(len(leaves), len(relationships)))
         # Return full set if no maximum was set
         return leaves, relationships
 
