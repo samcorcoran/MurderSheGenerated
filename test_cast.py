@@ -46,6 +46,23 @@ class TestCast(unittest.TestCase):
                                              numFamilyMembers,
                                              ConnectionStrategy.totallyConnect)
 
+    def test_bfs_gathering_all(self):
+        # Ensure all characters are related by family
+        self.create_all_family_relations()
+        # Calculate factorial of characters
+        totalRelationships = 0
+        for i in range(1, len(self.c.characters)):
+            totalRelationships += i
+        # Total relationships when all-connected should be n-1 + ... + 1
+        self.assertEqual(len(self.c.getAllRelationships()), totalRelationships)
+
+        # Gather all connected family members of a random starting character
+        leaves, relationships = self.c.gatherConnectedRelTypeMembersBreadthFirst(random.choice(self.c.characters),
+                                                                  RelationshipType.familial,
+                                                                  maxMembers = -1)
+        # Assert all characters are included in gathered set
+        self.assertEqual(len(leaves), len(self.c.characters))
+
     def test_dfs_gathering_all(self):
         # Ensure all characters are related by family
         self.create_all_family_relations()
@@ -57,6 +74,17 @@ class TestCast(unittest.TestCase):
                                                                   maxMembers = -1)
         # Assert all characters are included in gathered set
         self.assertEqual(len(leaves), len(self.c.characters))
+
+    def test_single_family(self):
+        # Problem: Additional families are being created even when everyone should be in a single family
+        self.create_all_family_relations()
+        # Create family objects with no maxMembers, which means only one will be created (for each fully-connected
+        # group of characters) using breadth first search
+        self.c.createTypedEntitiesForRelationships(RelationshipType.familial, -1, strategy="bfs")
+        # Assert cast has only one entity in total
+        self.assertEqual(len(self.c.getAllEntities()), 1)
+        # Assert cast has only one family entity
+        self.assertEqual(len(self.c.entities[RelationshipType.familial]), 1)
 
     def test_all_joining_entity(self):
         newFamily = self.c.createEntity(RelationshipType.familial)
